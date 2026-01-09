@@ -1,0 +1,31 @@
+name: Daily Slack Dashboard Report
+
+  on:
+    schedule:
+      - cron: '0 0 * * *'
+    workflow_dispatch:
+
+  jobs:
+    notify:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Setup Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
+
+        - name: Install dependencies
+          run: pip install google-cloud-bigquery psycopg2-binary requests
+
+        - name: Run report script
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+            BIGQUERY_KEY_B64: ${{ secrets.BIGQUERY_KEY }}
+            SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          run: |
+            echo "$BIGQUERY_KEY_B64" | base64 -d > /tmp/bq-key.json
+            export GOOGLE_APPLICATION_CREDENTIALS=/tmp/bq-key.json
+            python scripts/slack_report.py
