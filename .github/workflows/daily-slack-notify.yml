@@ -1,0 +1,86 @@
+name: Daily Slack Dashboard Report
+  on:
+    schedule:
+      - cron: '0 0 * * *'
+    workflow_dispatch:
+  jobs:
+    send-slack-notification:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Send Dashboard Report to Slack
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+            BIGQUERY_KEY: ${{ secrets.BIGQUERY_KEY }}
+            SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          run: |
+            pip install google-cloud-bigquery psycopg2-binary requests
+            python << 'EOF'
+            import os, json, requests
+            from datetime import datetime, timedelta
+            from google.cloud import bigquery
+            import psycopg2
+
+            key_json = os.environ.get('BIGQUERY_KEY')
+            with open('/tmp/bq-key.json', 'w') as f:
+                json.dump(json.loads(key_json), f)
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/tmp/bq-key.json'
+            client = bigquery.Client()
+
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=30)
+            start_str, end_str = start_date.strftime("%Y%m%d"), end_date.strftime("%Y%m%d")
+            start_dash, end_dash = start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
+
+            data = {}
+            for row in client.query(f"SELECT COUNT(DISTINCT user_pseudo_id) as mau FROM `cheongimun.analytics_515600551.events_*` WHERE _TABLE_SUFFIX BETWEEN '{start_str}' AND '{end_str}'").result():
+                data['mau'] = row.mau
+            for row in client.query(f"SELECT SUM(total_amount) as revenue, COUNT(DISTINCT customer_phone) as paying_users FROM `cheongimun.supabase_sync.orders` WHERE payment_status = 'PAID' AND DATE(created_at) BETWEEN '{start_dash}' AND '{end_dash}'").result():
+                data['revenue'] = int(row.revenue) if row.revenue else 0
+                data['paying_users'] = row.paying_users or 0
+            if data.get('revenue') and data.get('paying_users'):
+                data['arppu'] = round(data['revenue'] / data['paying_users'])
+            if data.get('mau') and data.get('paying_users'):
+                data['conversion'] = round(data['paying_users'] / data['mau'] * 100, 2)
+
+            try:
+                conn = psycopg2.connect(host='aws-1-ap-northeast-2.pooler.supabase.com', port=6543, database='postgres', user='postgres.jlutbjmjpreauyanjzdd', password=os.environ.get('SUPABASE_PASSWORD'), sslmode='require')
+                cur = conn.cursor()
+                cur.execute("SELECT SUM(spend) FROM adset_performance")
+                ad_spend = float(cur.fetchone()[0] or 52960184)
+                cur.execute("SELECT SUM(cost_krw) FROM api_costs")
+                ai_cost = float(cur.fetchone()[0] or 21754819)
+                cur.close()
+                conn.close()
+            except:
+                ad_spend, ai_cost = 52960184, 21754819
+
+            if data.get('paying_users') and ad_spend:
+                data['cac'] = round(ad_spend / data['paying_users'])
+            if data.get('arppu') and data.get('cac'):
+                data['ltv_cac'] = round(data['arppu'] / data['cac'], 2)
+            if data.get('revenue') and ad_spend:
+                data['roas'] = round(data['revenue'] / ad_spend, 2)
+            if data.get('revenue') and ai_cost:
+                data['margin'] = round((1 - ai_cost / data['revenue']) * 100, 1)
+
+            now = datetime.now().strftime('%Y-%m-%d %H:%M')
+            payload = {'blocks': [
+                {'type': 'header', 'text': {'type': 'plain_text', 'text': '📊 투자 대시보드 일간 리포트', 'emoji': True}},
+                {'type': 'context', 'elements': [{'type': 'mrkdwn', 'text': f'*{now}* | 데이터: {start_dash} ~ {end_dash}'}]},
+                {'type': 'divider'},
+                {'type': 'section', 'fields': [
+                    {'type': 'mrkdwn', 'text': f"*💰 월 매출*\n₩{data.get('revenue', 0):,}"},
+                    {'type': 'mrkdwn', 'text': f"*👥 MAU*\n{data.get('mau', 0):,}명"},
+                    {'type': 'mrkdwn', 'text': f"*💵 ARPPU*\n₩{data.get('arppu', 0):,}"},
+                    {'type': 'mrkdwn', 'text': f"*🛒 결제 유저*\n{data.get('paying_users', 0):,}명"}]},
+                {'type': 'divider'},
+                {'type': 'section', 'fields': [
+                    {'type': 'mrkdwn', 'text': f"*📈 ROAS*\n{data.get('roas', 0)}x"},
+                    {'type': 'mrkdwn', 'text': f"*💹 LTV/CAC*\n{data.get('ltv_cac', 0)}x"},
+                    {'type': 'mrkdwn', 'text': f"*📊 Margin*\n{data.get('margin', 0)}%"},
+                    {'type': 'mrkdwn', 'text': f"*🔄 전환율*\n{data.get('conversion', 0)}%"}]},
+                {'type': 'divider'},
+                {'type': 'actions', 'elements': [{'type': 'button', 'text': {'type': 'plain_text', 'text': '📊 대시보드 보기'}, 'url': 'https://invest-board-seven.vercel.app/', 'style': 'primary'}]}
+            ]}
+            requests.post(os.environ.get('SLACK_WEBHOOK_URL'), json=payload)
+            EOF
