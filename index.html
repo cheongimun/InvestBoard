@@ -546,7 +546,7 @@
             <p class="subtitle">Pre-seed 투자 유치 종합 대시보드</p>
             <div class="badge-row">
                 <span class="badge badge-purple">Pre-seed 단계</span>
-                <span class="badge badge-yellow">LTV/CAC 37.7x (우수)</span>
+                <span class="badge badge-yellow" data-kpi="ltvCacBadge">LTV/CAC 1.72x (목표: 3x 이상)</span>
                 <span class="badge badge-green" data-kpi="dateRange">데이터: 로딩중... (실시간 연동)</span>
             </div>
         </div>
@@ -636,19 +636,19 @@
                         <div class="status-text good">양호</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('efficiency'); scrollToTerm('cac');">
-                        <div class="kpi-name"><span class="status-dot excellent"></span>CAC</div>
-                        <div class="kpi-value" data-kpi="cac">923원</div>
-                        <div class="status-text excellent">우수</div>
+                        <div class="kpi-name"><span class="status-dot danger"></span>CAC</div>
+                        <div class="kpi-value" data-kpi="cac">20,903원</div>
+                        <div class="status-text danger">개선필요</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('health'); scrollToTerm('ltv');">
                         <div class="kpi-name"><span class="status-dot good"></span>LTV</div>
-                        <div class="kpi-value" data-kpi="ltv">34,820원+</div>
+                        <div class="kpi-value" data-kpi="ltv">35,924원+</div>
                         <div class="status-text good">양호</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('efficiency'); scrollToTerm('ltv-cac');">
-                        <div class="kpi-name"><span class="status-dot excellent"></span>LTV/CAC</div>
-                        <div class="kpi-value" data-kpi="ltvCac">37.7x</div>
-                        <div class="status-text excellent">우수</div>
+                        <div class="kpi-name"><span class="status-dot warning"></span>LTV/CAC</div>
+                        <div class="kpi-value" data-kpi="ltvCac">1.72x</div>
+                        <div class="status-text warning">목표미달</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('growth'); scrollToTerm('retention');">
                         <div class="kpi-name"><span class="status-dot danger"></span>D1 리텐션</div>
@@ -862,21 +862,21 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">CAC (고객 획득 비용)</span>
-                                    <span class="term-summary"><span class="status-dot warning"></span> 923원 | 주의</span>
+                                    <span class="term-summary"><span class="status-dot danger"></span> <span data-kpi="cac">20,903원</span> | 개선필요</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">신규 유저 1명을 획득하는 데 든 총 마케팅 비용. 낮을수록 효율적인 마케팅</div>
-                                <div class="formula">CAC = 총 마케팅비 / 신규 유저 수</div>
+                                <div class="formula">CAC = 총 광고비 / 결제 유저 수 = 62,896,085 / 3,009 = 20,903원</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>CAC 수준</th><th>효율성</th><th>의미</th><th>액션</th></tr></thead>
                                     <tbody>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td>1,000원 미만</td><td>매우 효율적</td><td>바이럴/오가닉 강함</td><td>확장 가속</td></tr>
-                                        <tr><td>1,000원 ~ 5,000원</td><td>효율적</td><td>광고 최적화됨</td><td>유지</td></tr>
-                                        <tr><td>5,000원 ~ 10,000원</td><td>보통</td><td>업계 평균 수준</td><td>모니터링</td></tr>
-                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>10,000원 ~ 30,000원</strong></td><td><strong>높음</strong></td><td><strong>개선 필요</strong></td><td><strong>천기문: 923원</strong></td></tr>
-                                        <tr style="background: rgba(239, 68, 68, 0.1);"><td>30,000원 이상</td><td>위험</td><td>수익성 저해</td><td>긴급 개선</td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td>5,000원 미만</td><td>매우 효율적</td><td>바이럴/오가닉 강함</td><td>확장 가속</td></tr>
+                                        <tr><td>5,000원 ~ 10,000원</td><td>효율적</td><td>광고 최적화됨</td><td>유지</td></tr>
+                                        <tr><td>10,000원 ~ 15,000원</td><td>보통</td><td>업계 평균 수준</td><td>모니터링</td></tr>
+                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>15,000원 ~ 25,000원</strong></td><td><strong>높음</strong></td><td><strong>개선 필요</strong></td><td><strong>천기문 현재 위치</strong></td></tr>
+                                        <tr style="background: rgba(239, 68, 68, 0.1);"><td>25,000원 이상</td><td>위험</td><td>수익성 저해</td><td>긴급 개선</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -886,25 +886,25 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">LTV/CAC Ratio</span>
-                                    <span class="term-summary"><span class="status-dot warning"></span> 37.7x | 주의</span>
+                                    <span class="term-summary"><span class="status-dot warning"></span> <span data-kpi="ltvCac">1.72x</span> | 목표미달</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">고객 1명의 생애 가치(LTV)를 획득 비용(CAC)으로 나눈 비율. 비즈니스 건전성의 핵심 지표</div>
-                                <div class="formula">LTV/CAC = LTV / CAC = 34,820 / 923 = 37.7x</div>
+                                <div class="formula">LTV/CAC = ARPPU / CAC = 35,924 / 20,903 = 1.72x</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>LTV/CAC</th><th>상태</th><th>의미</th><th>투자자 관점</th></tr></thead>
                                     <tbody>
                                         <tr style="background: rgba(239, 68, 68, 0.1);"><td>1x 미만</td><td>위험</td><td>팔수록 손해</td><td>투자 불가</td></tr>
-                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>1x ~ 2x</strong></td><td><strong>손익분기+</strong></td><td><strong>수익 발생 시작</strong></td><td><strong>천기문: 37.7x</strong></td></tr>
+                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>1x ~ 2x</strong></td><td><strong>손익분기+</strong></td><td><strong>수익 발생 시작</strong></td><td><strong>천기문 현재 위치</strong></td></tr>
                                         <tr><td>2x ~ 3x</td><td>양호</td><td>수익 창출 가능</td><td>검토 가능</td></tr>
-                                        <tr style="background: rgba(59, 130, 246, 0.1);"><td>3x ~ 5x</td><td>건전</td><td>투자 적격</td><td>적극 검토</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td>5x 이상</td><td>우수</td><td>공격적 확장 가능</td><td>최고 수준</td></tr>
+                                        <tr style="background: rgba(59, 130, 246, 0.1);"><td>3x ~ 5x</td><td>건전</td><td>투자 적격 기준</td><td>적극 검토</td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td>5x 이상</td><td>우수</td><td>공격적 확장 가능</td><td>투자 적극 권장</td></tr>
                                     </tbody>
                                 </table>
                                 <div style="margin-top: 10px; padding: 10px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; font-size: 0.85rem;">
-                                    <strong style="color: #f59e0b;">천기문 LTV/CAC 37.7x는 손익분기 이상 달성. 광고비 회수 후 수익 발생 구간</strong>
+                                    <strong style="color: #f59e0b;">천기문 LTV/CAC 1.72x는 손익분기 달성. 3x 목표 달성을 위해 CAC 절감 또는 ARPPU 향상 필요</strong>
                                 </div>
                             </div>
                         </div>
@@ -913,19 +913,19 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">ROAS (광고 수익률)</span>
-                                    <span class="term-summary"><span class="status-dot good"></span> 37.7x | 양호</span>
+                                    <span class="term-summary"><span class="status-dot good"></span> <span data-kpi="roas">1.72x</span> | 양호</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">광고에 투자한 비용 대비 발생한 매출의 비율. 광고 효율성을 측정</div>
-                                <div class="formula">ROAS = 광고로 인한 매출 / 광고비</div>
+                                <div class="formula">ROAS = 매출 / 광고비 = 108,094,700 / 62,896,085 = 1.72x</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>ROAS</th><th>상태</th><th>의미</th><th>액션</th></tr></thead>
                                     <tbody>
                                         <tr style="background: rgba(239, 68, 68, 0.1);"><td>0.5x 미만</td><td>손실</td><td>광고비 절반도 회수 못함</td><td>긴급 중단</td></tr>
                                         <tr><td>0.5x ~ 1.0x</td><td>적자</td><td>광고비 일부만 회수</td><td>최적화 필요</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>1.0x ~ 2.0x</strong></td><td><strong>수익 발생</strong></td><td><strong>광고비 회수 + α</strong></td><td><strong>천기문: 37.7x</strong></td></tr>
+                                        <tr style="background: rgba(59, 130, 246, 0.1);"><td><strong>1.0x ~ 2.0x</strong></td><td><strong>손익분기+</strong></td><td><strong>광고비 회수 + α</strong></td><td><strong>천기문 현재 위치</strong></td></tr>
                                         <tr style="background: rgba(16, 185, 129, 0.1);"><td>2.0x 이상</td><td>고효율</td><td>스케일업 가능</td><td>예산 확대</td></tr>
                                     </tbody>
                                 </table>
@@ -1104,14 +1104,14 @@
                         <div class="status-text excellent">Seed 초과</div>
                     </div>
                     <div class="kpi-mini-card">
-                        <div class="kpi-name"><span class="status-dot excellent"></span>LTV/CAC</div>
-                        <div class="kpi-value" data-kpi="ltvCac">37.7x</div>
-                        <div class="status-text excellent">업계 최고</div>
+                        <div class="kpi-name"><span class="status-dot warning"></span>LTV/CAC</div>
+                        <div class="kpi-value" data-kpi="ltvCac">1.72x</div>
+                        <div class="status-text warning">3x 목표 미달</div>
                     </div>
                     <div class="kpi-mini-card">
-                        <div class="kpi-name"><span class="status-dot excellent"></span>CAC</div>
-                        <div class="kpi-value" data-kpi="cac">923원</div>
-                        <div class="status-text excellent">업계 최고</div>
+                        <div class="kpi-name"><span class="status-dot danger"></span>CAC</div>
+                        <div class="kpi-value" data-kpi="cac">20,903원</div>
+                        <div class="status-text danger">비용 절감 필요</div>
                     </div>
                     <div class="kpi-mini-card">
                         <div class="kpi-name"><span class="status-dot excellent"></span>전환율</div>
@@ -1272,7 +1272,7 @@
                             <td>2x+</td>
                             <td>2.5x+</td>
                             <td>3x+</td>
-                            <td style="color: #10b981;"><strong>37.7x</strong></td>
+                            <td style="color: #f59e0b;"><strong data-kpi="ltvCac">1.72x</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">David Skok, a16z</td>
                         </tr>
                         <tr>
@@ -1299,7 +1299,7 @@
                             <td>&lt; 18,000원</td>
                             <td>&lt; 14,000원</td>
                             <td>&lt; 12,000원</td>
-                            <td style="color: #f59e0b;"><strong>923원</strong></td>
+                            <td style="color: #ef4444;"><strong data-kpi="cac">20,903원</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">THE VC 한국</td>
                         </tr>
                     </tbody>
@@ -1307,13 +1307,12 @@
                 <p style="color: #666; font-size: 0.75rem; margin-top: 10px;">* D1 리텐션: 웹 서비스 평균 5~15%, 앱 서비스 평균 25~40%. 천기문은 웹 기준으로 앱 전환 시 개선 가능</p>
             </div>
 
-            <div class="insight-box success">
-                <h5>천기문의 Pre-seed 단계 적합성 분석</h5>
+            <div class="insight-box warning">
+                <h5>천기문의 Pre-seed 단계 적합성 분석 (투자자 관점)</h5>
                 <p>
-                    <strong>초과 달성 지표:</strong> MAU (6.6만), MRR (8,663만원), ARPPU (34,820원), CAC (923원), LTV/CAC (37.7x)<br>
-                    <strong>기준 충족:</strong> ROAS (1.42x), LTV/CAC (37.7x)<br>
-                    <strong>개선 필요:</strong> Stickiness (4.1%), Stickiness (4.1%), D1 리텐션 (4.4%)<br><br>
-                    <strong style="color: #10b981;">결론:</strong> 매출/ARPPU는 <strong>Seed 수준</strong> 달성. Stickiness가 낮아 재방문 개선 필요. 결제 유저 D1 11.6%로 PMF 신호 존재
+                    <strong style="color: #10b981;">달성 지표:</strong> MAU (<span data-kpi="mau">6.6만</span>, Seed 수준), MRR (<span data-kpi="mrr">1.08억</span>, Seed 초과), ARPPU (<span data-kpi="arppu">35,924원</span>), Gross Margin (<span data-kpi="grossMargin">85.7%</span>)<br>
+                    <strong style="color: #f59e0b;">개선 필요:</strong> CAC (<span data-kpi="cac">20,903원</span>, 높음), LTV/CAC (<span data-kpi="ltvCac">1.72x</span>, 목표 3x 미달), D1 리텐션 (<span data-kpi="d1Retention">4.55%</span>, 목표 20% 미달), Stickiness (<span data-kpi="stickiness">3.83%</span>)<br><br>
+                    <strong style="color: #667eea;">투자자 관점 결론:</strong> 매출 규모는 Seed 수준 초과 달성으로 긍정적. 그러나 CAC가 높아 LTV/CAC 1.72x로 3x 목표 미달. 마케팅 효율 개선 및 리텐션 향상이 Seed 라운드 진입의 핵심 과제.
                 </p>
             </div>
 
@@ -1544,33 +1543,33 @@
                                 </div>
                             </td>
                             <td><span class="status-badge excellent">초과달성</span></td>
-                            <td>업계 상위</td>
+                            <td>Seed 수준</td>
                         </tr>
                         <tr>
                             <td><strong>LTV/CAC</strong></td>
-                            <td>37.7x</td>
-                            <td>1.0x+</td>
+                            <td data-kpi="ltvCac">1.72x</td>
+                            <td>3.0x+</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill achieved" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">3770%</span>
+                                    <div class="progress-bar"><div class="progress-fill warning" style="width: 57%;"></div></div>
+                                    <span class="progress-percent">57%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge achieved">달성</span></td>
-                            <td>Seed 기준 충족</td>
+                            <td><span class="status-badge warning">미달</span></td>
+                            <td>3x 목표 대비 57%</td>
                         </tr>
                         <tr>
                             <td><strong>CAC</strong></td>
-                            <td>923원</td>
+                            <td data-kpi="cac">20,903원</td>
                             <td>&lt; 10,000원</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill excellent" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">1000%+</span>
+                                    <div class="progress-bar"><div class="progress-fill danger" style="width: 48%;"></div></div>
+                                    <span class="progress-percent">48%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge excellent">초과달성</span></td>
-                            <td>업계 최고</td>
+                            <td><span class="status-badge danger">미달</span></td>
+                            <td>비용 절감 필요</td>
                         </tr>
                         <tr>
                             <td><strong>유료 전환율</strong></td>
@@ -1931,13 +1930,13 @@
 
             <!-- 종합 평가 -->
             <div class="section" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.08) 100%);">
-                <div class="section-title">종합 평가</div>
+                <div class="section-title">종합 평가 (투자자 관점)</div>
                 <div class="insight-box warning">
-                    <h5 style="font-size: 1.1rem;">Pre-seed 투자 적합성: 매우 높음</h5>
+                    <h5 style="font-size: 1.1rem;">Pre-seed 투자 적합성 평가</h5>
                     <p>
-                        <strong style="color: #10b981;">강점:</strong> ARPPU (34,820원, 경쟁사 5~8배), MRR (8,663만원), 유료전환율 (3.76%), Gross Margin (75.7%)<br><br>
-                        <strong style="color: #f59e0b;">개선 필요:</strong> Stickiness (4.1%)이 높아 광고 효율 최적화 필요. LTV/CAC 37.7x는 업계 최고 수준 (목표 3x 초과 달성)<br><br>
-                        <strong style="color: #667eea;">결론:</strong> 리텐션 지표는 웹 기반의 구조적 한계이며, 앱 전환 시 크게 개선될 것으로 예상됩니다. 수익 지표는 이미 Seed 수준 달성.
+                        <strong style="color: #10b981;">Seed 수준 달성:</strong> MAU (<span data-kpi="mau">6.6만</span>), MRR (<span data-kpi="mrr">1.08억</span>), ARPPU (<span data-kpi="arppu">35,924원</span>), Gross Margin (<span data-kpi="grossMargin">85.7%</span>), 전환율 (<span data-kpi="conversionRate">4.55%</span>)<br><br>
+                        <strong style="color: #f59e0b;">개선 필요:</strong> CAC (<span data-kpi="cac">20,903원</span>)가 높아 LTV/CAC (<span data-kpi="ltvCac">1.72x</span>)가 3x 목표 미달. D1 리텐션 (<span data-kpi="d1Retention">4.55%</span>), Stickiness (<span data-kpi="stickiness">3.83%</span>) 개선 필요<br><br>
+                        <strong style="color: #667eea;">투자자 관점 결론:</strong> 매출 규모와 수익성은 Pre-seed 수준 초과. 그러나 CAC 절감을 통한 LTV/CAC 개선과 리텐션 향상이 Seed 라운드 진입의 선결 조건. 웹→앱 전환 시 리텐션 개선 가능성 존재.
                     </p>
                 </div>
             </div>
@@ -1972,7 +1971,7 @@
                 </div>
                 <p style="color: #888; font-size: 0.85rem; text-align: center; margin-top: 15px;">
                     <span style="color: #667eea; font-weight: 600;">핵심 인사이트:</span>
-                    런칭 2개월 만에 경쟁사 Series A 수준의 유닛 이코노믹스 달성. ARPPU는 업계 최고 수준
+                    런칭 2개월 만에 Pre-seed 기준 초과 달성. 단, CAC 절감 및 LTV/CAC 3x 달성이 Seed 라운드 진입 조건
                 </p>
             </div>
 
@@ -2340,8 +2339,8 @@
                 <div class="insight-box success">
                     <h5 style="font-size: 1.1rem;">투자 유치 가능성: 높음</h5>
                     <p>
-                        <strong style="color: #10b981;">트랙션:</strong> 수익성 지표(ARPPU, ROAS)가 업계 최고 수준. 2개월 만에 월 8,663만원 매출 달성은 Pre-seed 단계에서 매우 이례적<br><br>
-                        <strong style="color: #667eea;">투자 포인트:</strong> AI 기반 기술 차별화 + 압도적 유닛 이코노믹스 (ARPPU 34,820원) + 빠른 수익화<br><br>
+                        <strong style="color: #10b981;">달성:</strong> MAU, MRR, ARPPU, Gross Margin이 Pre-seed 기준 초과. 2개월 만에 월 <span data-kpi="mrr">1.08억</span> 매출 달성<br><br>
+                        <strong style="color: #f59e0b;">과제:</strong> CAC (<span data-kpi="cac">20,903원</span>) 절감 및 LTV/CAC (<span data-kpi="ltvCac">1.72x</span>) 3x 달성, 리텐션 개선 필요<br><br>
                         <strong style="color: #f59e0b;">개선 포인트:</strong> 앱 출시 후 리텐션 개선 시 Seed/Pre-A 진입 → 더 높은 밸류에이션 기대
                     </p>
                 </div>
@@ -2532,9 +2531,9 @@
                         <div class="status-text warning">AI 차별화</div>
                     </div>
                     <div class="kpi-mini-card" style="border-color: rgba(245, 158, 11, 0.5);">
-                        <div class="kpi-name"><span class="status-dot warning"></span>ROAS</div>
+                        <div class="kpi-name"><span class="status-dot warning"></span>LTV/CAC</div>
                         <div class="kpi-value" style="color: #f59e0b; font-size: 1rem;">MED</div>
-                        <div class="status-text warning">37.7x (양호)</div>
+                        <div class="status-text warning"><span data-kpi="ltvCac">1.72x</span> (3x 목표)</div>
                     </div>
                     <div class="kpi-mini-card" style="border-color: rgba(16, 185, 129, 0.5);">
                         <div class="kpi-name"><span class="status-dot good"></span>시장</div>
@@ -2753,35 +2752,35 @@
 
             <!-- 투자 결정 요약 -->
             <div class="section" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%); border-color: rgba(102, 126, 234, 0.3);">
-                <div class="section-title">투자 결정 요약</div>
+                <div class="section-title">투자 결정 요약 (30년 경력 투자 전문가 관점)</div>
                 <div class="two-col">
                     <div>
-                        <h4 style="color: #10b981; margin-bottom: 15px;">투자 포인트 (Strengths)</h4>
+                        <h4 style="color: #10b981; margin-bottom: 15px;">Pre-seed 기준 달성 (Strengths)</h4>
                         <ul style="color: #ccc; line-height: 2; padding-left: 20px;">
-                            <li><strong>LTV/CAC 37.7x</strong> - 손익분기 이상, 수익 발생 구간</li>
-                            <li><strong>ARPPU 34,820원</strong> - 경쟁사 대비 5~8배 높은 객단가</li>
-                            <li><strong>2개월 만에 월 8,663만원 매출</strong> - 빠른 수익화</li>
-                            <li><strong>AI 기반 차별화</strong> - 기존 사주 서비스와 다른 경험</li>
-                            <li><strong>결제 유저 D1 11.6%</strong> - PMF 신호 존재</li>
+                            <li><strong>MAU <span data-kpi="mau">6.6만</span></strong> - Seed 벤치마크(5만~20만) 달성</li>
+                            <li><strong>MRR <span data-kpi="mrr">1.08억</span></strong> - Seed 벤치마크(5천만) 초과</li>
+                            <li><strong>ARPPU <span data-kpi="arppu">35,924원</span></strong> - 고객 가치 입증</li>
+                            <li><strong>Gross Margin <span data-kpi="grossMargin">85.7%</span></strong> - SaaS 수준 수익성</li>
+                            <li><strong>전환율 <span data-kpi="conversionRate">4.55%</span></strong> - Pre-seed 기준 충족</li>
                         </ul>
                     </div>
                     <div>
-                        <h4 style="color: #ef4444; margin-bottom: 15px;">주의 사항 (Risks)</h4>
+                        <h4 style="color: #ef4444; margin-bottom: 15px;">Seed 진입 전 개선 필요 (Risks)</h4>
                         <ul style="color: #ccc; line-height: 2; padding-left: 20px;">
-                            <li><strong>전체 D1 리텐션 4.4%</strong> - 앱 전환 필요</li>
-                            <li><strong>Stickiness 4.1%</strong> - 데일리 콘텐츠 부재</li>
-                            <li><strong>ROAS 1.42x</strong> - 수익 발생 구간 (양호)</li>
-                            <li><strong>경쟁 심화</strong> - 점신 IPO, 포스텔러 성장</li>
+                            <li><strong>CAC <span data-kpi="cac">20,903원</span></strong> - 비용 절감 필요</li>
+                            <li><strong>LTV/CAC <span data-kpi="ltvCac">1.72x</span></strong> - 3x 목표 미달</li>
+                            <li><strong>D1 리텐션 <span data-kpi="d1Retention">4.55%</span></strong> - 20% 목표 미달</li>
+                            <li><strong>Stickiness <span data-kpi="stickiness">3.83%</span></strong> - 재방문 유도 필요</li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="insight-box success" style="margin-top: 25px;">
-                    <h5>최종 평가: Pre-seed 투자 적합</h5>
+                <div class="insight-box warning" style="margin-top: 25px;">
+                    <h5>최종 평가: Pre-seed 투자 조건부 적합</h5>
                     <p>
-                        천기문은 Pre-seed 단계임에도 <strong>수익성 지표는 Series A급</strong>을 달성했습니다.<br>
-                        리텐션 개선을 위한 앱 출시 자금 확보 시, <strong>6개월 내 Seed 라운드 진입</strong>이 가능합니다.<br><br>
-                        <strong style="font-size: 1.1rem;">예상 기업가치: 50억~80억원 | 예상 투자 유치: 5억~10억원</strong>
+                        천기문은 Pre-seed 단계에서 <strong>매출 규모는 Seed 수준 초과</strong> 달성으로 긍정적입니다.<br>
+                        그러나 <strong>CAC 절감을 통한 LTV/CAC 3x 달성</strong>과 <strong>리텐션 개선</strong>이 Seed 라운드 진입의 선결 조건입니다.<br><br>
+                        <strong style="font-size: 1.1rem;">예상 기업가치: 30억~50억원 | 예상 투자 유치: 3억~5억원 (마케팅 효율화 및 앱 개발 목적)</strong>
                     </p>
                 </div>
             </div>
