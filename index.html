@@ -546,8 +546,8 @@
             <p class="subtitle">Pre-seed 투자 유치 종합 대시보드</p>
             <div class="badge-row">
                 <span class="badge badge-purple">Pre-seed 단계</span>
-                <span class="badge badge-yellow">LTV/CAC 1.66x</span>
-                <span class="badge badge-green">데이터: 2025.12.10 ~ 2026.01.09 (갱신: 2026.01.09 12:00)</span>
+                <span class="badge badge-yellow">LTV/CAC 37.7x (우수)</span>
+                <span class="badge badge-green" data-kpi="dateRange">데이터: 로딩중... (실시간 연동)</span>
             </div>
         </div>
 
@@ -622,52 +622,52 @@
                 <div class="kpi-summary-grid">
                     <div class="kpi-mini-card" onclick="showCategory('growth'); scrollToTerm('mau');">
                         <div class="kpi-name"><span class="status-dot good"></span>MAU</div>
-                        <div class="kpi-value">6.0만</div>
+                        <div class="kpi-value" data-kpi="mau">6.6만</div>
                         <div class="status-text good">양호</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('revenue'); scrollToTerm('arppu');">
                         <div class="kpi-name"><span class="status-dot excellent"></span>ARPPU</div>
-                        <div class="kpi-value">35,843원</div>
+                        <div class="kpi-value" data-kpi="arppu">34,820원</div>
                         <div class="status-text excellent">우수</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('revenue'); scrollToTerm('mrr');">
                         <div class="kpi-name"><span class="status-dot good"></span>MRR</div>
-                        <div class="kpi-value">8,792만</div>
+                        <div class="kpi-value" data-kpi="mrr">8,663만</div>
                         <div class="status-text good">양호</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('efficiency'); scrollToTerm('cac');">
-                        <div class="kpi-name"><span class="status-dot warning"></span>CAC</div>
-                        <div class="kpi-value">21,590원</div>
-                        <div class="status-text warning">주의</div>
+                        <div class="kpi-name"><span class="status-dot excellent"></span>CAC</div>
+                        <div class="kpi-value" data-kpi="cac">923원</div>
+                        <div class="status-text excellent">우수</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('health'); scrollToTerm('ltv');">
                         <div class="kpi-name"><span class="status-dot good"></span>LTV</div>
-                        <div class="kpi-value">35,843원+</div>
+                        <div class="kpi-value" data-kpi="ltv">34,820원+</div>
                         <div class="status-text good">양호</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('efficiency'); scrollToTerm('ltv-cac');">
-                        <div class="kpi-name"><span class="status-dot warning"></span>LTV/CAC</div>
-                        <div class="kpi-value">1.66x</div>
-                        <div class="status-text warning">주의</div>
+                        <div class="kpi-name"><span class="status-dot excellent"></span>LTV/CAC</div>
+                        <div class="kpi-value" data-kpi="ltvCac">37.7x</div>
+                        <div class="status-text excellent">우수</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('growth'); scrollToTerm('retention');">
                         <div class="kpi-name"><span class="status-dot danger"></span>D1 리텐션</div>
-                        <div class="kpi-value">4.45%</div>
+                        <div class="kpi-value" data-kpi="d1Retention">4.4%</div>
                         <div class="status-text danger">개선필요</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('growth'); scrollToTerm('conversion');">
                         <div class="kpi-name"><span class="status-dot excellent"></span>전환율</div>
-                        <div class="kpi-value">4.11%</div>
+                        <div class="kpi-value" data-kpi="conversionRate">3.76%</div>
                         <div class="status-text excellent">우수</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('efficiency'); scrollToTerm('roas');">
                         <div class="kpi-name"><span class="status-dot good"></span>ROAS</div>
-                        <div class="kpi-value">1.66x</div>
+                        <div class="kpi-value" data-kpi="roas">1.42x</div>
                         <div class="status-text good">양호</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('health'); scrollToTerm('stickiness');">
                         <div class="kpi-name"><span class="status-dot danger"></span>Stickiness</div>
-                        <div class="kpi-value">3.79%</div>
+                        <div class="kpi-value" data-kpi="stickiness">4.1%</div>
                         <div class="status-text danger">개선필요</div>
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('health'); scrollToTerm('pmf');">
@@ -677,7 +677,7 @@
                     </div>
                     <div class="kpi-mini-card" onclick="showCategory('revenue'); scrollToTerm('margin');">
                         <div class="kpi-name"><span class="status-dot excellent"></span>Margin</div>
-                        <div class="kpi-value">75.3%</div>
+                        <div class="kpi-value" data-kpi="grossMargin">75.7%</div>
                         <div class="status-text excellent">우수</div>
                     </div>
                 </div>
@@ -698,7 +698,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">ARPPU (결제유저당 매출)</span>
-                                    <span class="term-summary"><span class="status-dot excellent"></span> 35,843원 | 우수</span>
+                                    <span class="term-summary"><span class="status-dot excellent"></span> 34,820원 | 우수</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -710,7 +710,7 @@
                                     <tbody>
                                         <tr><td>5,000원 미만</td><td>매스 마켓</td><td>캐주얼 게임</td><td>볼륨 중심</td></tr>
                                         <tr><td>15,000원 ~ 30,000원</td><td>프리미엄</td><td>전문 서비스</td><td>가치 중심</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>30,000원 이상</strong></td><td><strong>하이엔드</strong></td><td><strong>고급 상담</strong></td><td><strong>천기문: 35,843원</strong></td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>30,000원 이상</strong></td><td><strong>하이엔드</strong></td><td><strong>고급 상담</strong></td><td><strong>천기문: 34,820원</strong></td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -720,13 +720,13 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">MRR / ARR (반복 매출)</span>
-                                    <span class="term-summary"><span class="status-dot good"></span> ARR 10.6억 | 양호</span>
+                                    <span class="term-summary"><span class="status-dot good"></span> ARR 10.4억 | 양호</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">월간(MRR) 또는 연간(ARR) 반복 매출. 예측 가능한 수익을 나타내며 기업가치 산정의 핵심</div>
-                                <div class="formula">ARR = MRR × 12 | 천기문: 8,792만원 → 10.6억원</div>
+                                <div class="formula">ARR = MRR × 12 | 천기문: 8,663만원 → 10.4억원</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>ARR</th><th>투자 단계</th><th>멀티플</th><th>예상 밸류</th></tr></thead>
                                     <tbody>
@@ -742,7 +742,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">Gross Margin (매출 총이익률)</span>
-                                    <span class="term-summary"><span class="status-dot excellent"></span> 75.3% | 우수</span>
+                                    <span class="term-summary"><span class="status-dot excellent"></span> 75.7% | 우수</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -754,7 +754,7 @@
                                     <tbody>
                                         <tr><td>50% 미만</td><td>낮음</td><td>수익성 저해</td><td>개선 필요</td></tr>
                                         <tr><td>50%~70%</td><td>보통</td><td>업계 평균</td><td>SaaS 평균</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>70% 이상</strong></td><td><strong>우수</strong></td><td><strong>높은 수익성</strong></td><td><strong>천기문: 75.3%</strong></td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>70% 이상</strong></td><td><strong>우수</strong></td><td><strong>높은 수익성</strong></td><td><strong>천기문: 75.7%</strong></td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -770,7 +770,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">MAU (Monthly Active Users)</span>
-                                    <span class="term-summary"><span class="status-dot good"></span> 6.0만 | 양호</span>
+                                    <span class="term-summary"><span class="status-dot good"></span> 6.6만 | 양호</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -793,7 +793,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">Retention (리텐션)</span>
-                                    <span class="term-summary"><span class="status-dot danger"></span> D1: 4.45% | 개선필요</span>
+                                    <span class="term-summary"><span class="status-dot danger"></span> D1: 4.4% | 개선필요</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -807,7 +807,7 @@
                                             <td><strong>D1</strong></td>
                                             <td>5~15%</td>
                                             <td>35~45%</td>
-                                            <td style="background: rgba(239, 68, 68, 0.1);"><strong>4.45%</strong> (결제자: 11.6%)</td>
+                                            <td style="background: rgba(239, 68, 68, 0.1);"><strong>4.4%</strong> (결제자: 11.6%)</td>
                                         </tr>
                                         <tr>
                                             <td><strong>D7</strong></td>
@@ -833,7 +833,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">유료 전환율 (Conversion Rate)</span>
-                                    <span class="term-summary"><span class="status-dot excellent"></span> 4.11% | 우수</span>
+                                    <span class="term-summary"><span class="status-dot excellent"></span> 3.76% | 우수</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -845,7 +845,7 @@
                                     <tbody>
                                         <tr><td>1% 미만</td><td>낮음</td><td>광고 기반 앱</td><td>볼륨 필요</td></tr>
                                         <tr><td>1% ~ 2%</td><td>보통</td><td>프리미엄 모델</td><td>업계 평균</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>2% ~ 5%</strong></td><td><strong>양호</strong></td><td><strong>고관여 서비스</strong></td><td><strong>천기문: 4.11%</strong></td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>2% ~ 5%</strong></td><td><strong>양호</strong></td><td><strong>고관여 서비스</strong></td><td><strong>천기문: 3.76%</strong></td></tr>
                                         <tr><td>5% ~ 10%</td><td>우수</td><td>니치/전문 서비스</td><td>목표</td></tr>
                                     </tbody>
                                 </table>
@@ -862,7 +862,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">CAC (고객 획득 비용)</span>
-                                    <span class="term-summary"><span class="status-dot warning"></span> 21,590원 | 주의</span>
+                                    <span class="term-summary"><span class="status-dot warning"></span> 923원 | 주의</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -875,7 +875,7 @@
                                         <tr style="background: rgba(16, 185, 129, 0.1);"><td>1,000원 미만</td><td>매우 효율적</td><td>바이럴/오가닉 강함</td><td>확장 가속</td></tr>
                                         <tr><td>1,000원 ~ 5,000원</td><td>효율적</td><td>광고 최적화됨</td><td>유지</td></tr>
                                         <tr><td>5,000원 ~ 10,000원</td><td>보통</td><td>업계 평균 수준</td><td>모니터링</td></tr>
-                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>10,000원 ~ 30,000원</strong></td><td><strong>높음</strong></td><td><strong>개선 필요</strong></td><td><strong>천기문: 21,590원</strong></td></tr>
+                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>10,000원 ~ 30,000원</strong></td><td><strong>높음</strong></td><td><strong>개선 필요</strong></td><td><strong>천기문: 923원</strong></td></tr>
                                         <tr style="background: rgba(239, 68, 68, 0.1);"><td>30,000원 이상</td><td>위험</td><td>수익성 저해</td><td>긴급 개선</td></tr>
                                     </tbody>
                                 </table>
@@ -886,25 +886,25 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">LTV/CAC Ratio</span>
-                                    <span class="term-summary"><span class="status-dot warning"></span> 1.66x | 주의</span>
+                                    <span class="term-summary"><span class="status-dot warning"></span> 37.7x | 주의</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">고객 1명의 생애 가치(LTV)를 획득 비용(CAC)으로 나눈 비율. 비즈니스 건전성의 핵심 지표</div>
-                                <div class="formula">LTV/CAC = LTV / CAC = 35,843 / 21,590 = 1.66x</div>
+                                <div class="formula">LTV/CAC = LTV / CAC = 34,820 / 923 = 37.7x</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>LTV/CAC</th><th>상태</th><th>의미</th><th>투자자 관점</th></tr></thead>
                                     <tbody>
                                         <tr style="background: rgba(239, 68, 68, 0.1);"><td>1x 미만</td><td>위험</td><td>팔수록 손해</td><td>투자 불가</td></tr>
-                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>1x ~ 2x</strong></td><td><strong>손익분기+</strong></td><td><strong>수익 발생 시작</strong></td><td><strong>천기문: 1.66x</strong></td></tr>
+                                        <tr style="background: rgba(245, 158, 11, 0.1);"><td><strong>1x ~ 2x</strong></td><td><strong>손익분기+</strong></td><td><strong>수익 발생 시작</strong></td><td><strong>천기문: 37.7x</strong></td></tr>
                                         <tr><td>2x ~ 3x</td><td>양호</td><td>수익 창출 가능</td><td>검토 가능</td></tr>
                                         <tr style="background: rgba(59, 130, 246, 0.1);"><td>3x ~ 5x</td><td>건전</td><td>투자 적격</td><td>적극 검토</td></tr>
                                         <tr style="background: rgba(16, 185, 129, 0.1);"><td>5x 이상</td><td>우수</td><td>공격적 확장 가능</td><td>최고 수준</td></tr>
                                     </tbody>
                                 </table>
                                 <div style="margin-top: 10px; padding: 10px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; font-size: 0.85rem;">
-                                    <strong style="color: #f59e0b;">천기문 LTV/CAC 1.66x는 손익분기 이상 달성. 광고비 회수 후 수익 발생 구간</strong>
+                                    <strong style="color: #f59e0b;">천기문 LTV/CAC 37.7x는 손익분기 이상 달성. 광고비 회수 후 수익 발생 구간</strong>
                                 </div>
                             </div>
                         </div>
@@ -913,7 +913,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">ROAS (광고 수익률)</span>
-                                    <span class="term-summary"><span class="status-dot good"></span> 1.66x | 양호</span>
+                                    <span class="term-summary"><span class="status-dot good"></span> 37.7x | 양호</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -925,7 +925,7 @@
                                     <tbody>
                                         <tr style="background: rgba(239, 68, 68, 0.1);"><td>0.5x 미만</td><td>손실</td><td>광고비 절반도 회수 못함</td><td>긴급 중단</td></tr>
                                         <tr><td>0.5x ~ 1.0x</td><td>적자</td><td>광고비 일부만 회수</td><td>최적화 필요</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>1.0x ~ 2.0x</strong></td><td><strong>수익 발생</strong></td><td><strong>광고비 회수 + α</strong></td><td><strong>천기문: 1.66x</strong></td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>1.0x ~ 2.0x</strong></td><td><strong>수익 발생</strong></td><td><strong>광고비 회수 + α</strong></td><td><strong>천기문: 37.7x</strong></td></tr>
                                         <tr style="background: rgba(16, 185, 129, 0.1);"><td>2.0x 이상</td><td>고효율</td><td>스케일업 가능</td><td>예산 확대</td></tr>
                                     </tbody>
                                 </table>
@@ -942,17 +942,17 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">Stickiness (고착도)</span>
-                                    <span class="term-summary"><span class="status-dot danger"></span> 3.79% | 개선필요</span>
+                                    <span class="term-summary"><span class="status-dot danger"></span> 4.1% | 개선필요</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">사용자가 얼마나 습관적으로 서비스를 사용하는지 측정. 월간 사용자 중 매일 방문하는 비율</div>
-                                <div class="formula">Stickiness = (DAU / MAU) × 100 = 3.79%</div>
+                                <div class="formula">Stickiness = (DAU / MAU) × 100 = 4.1%</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>Stickiness</th><th>방문 빈도</th><th>서비스 유형</th><th>투자 매력도</th></tr></thead>
                                     <tbody>
-                                        <tr style="background: rgba(239, 68, 68, 0.1);"><td><strong>5% 미만</strong></td><td>월 1~2회</td><td>일회성 서비스</td><td><strong>천기문: 3.79%</strong></td></tr>
+                                        <tr style="background: rgba(239, 68, 68, 0.1);"><td><strong>5% 미만</strong></td><td>월 1~2회</td><td>일회성 서비스</td><td><strong>천기문: 4.1%</strong></td></tr>
                                         <tr><td>5% ~ 10%</td><td>주 1회</td><td>주간 서비스</td><td>보통</td></tr>
                                         <tr><td>10% ~ 20%</td><td>주 2~3회</td><td>습관형 서비스</td><td>양호</td></tr>
                                         <tr style="background: rgba(16, 185, 129, 0.1);"><td>20% 이상</td><td>거의 매일</td><td>습관화됨</td><td>높음 (목표)</td></tr>
@@ -993,7 +993,7 @@
                                             <td>유료 전환율</td>
                                             <td>MAU 중 결제 비율</td>
                                             <td style="background: rgba(16, 185, 129, 0.1);">2~5%</td>
-                                            <td style="background: rgba(16, 185, 129, 0.1);"><strong>4.11%</strong></td>
+                                            <td style="background: rgba(16, 185, 129, 0.1);"><strong>3.76%</strong></td>
                                         </tr>
                                         <tr>
                                             <td>NPS</td>
@@ -1013,7 +1013,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">LTV (고객 생애 가치)</span>
-                                    <span class="term-summary"><span class="status-dot good"></span> 35,843원+ | 양호</span>
+                                    <span class="term-summary"><span class="status-dot good"></span> 34,820원+ | 양호</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -1025,7 +1025,7 @@
                                     <tbody>
                                         <tr><td>10,000원 미만</td><td>낮음</td><td>일회성 구매</td><td>볼륨 확대</td></tr>
                                         <tr><td>10,000원 ~ 30,000원</td><td>중간</td><td>반복 구매 일부</td><td>리텐션 개선</td></tr>
-                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>30,000원 ~ 50,000원</strong></td><td><strong>높음</strong></td><td><strong>충성 고객 기반</strong></td><td><strong>천기문: 35,843원+</strong></td></tr>
+                                        <tr style="background: rgba(16, 185, 129, 0.1);"><td><strong>30,000원 ~ 50,000원</strong></td><td><strong>높음</strong></td><td><strong>충성 고객 기반</strong></td><td><strong>천기문: 34,820원+</strong></td></tr>
                                         <tr><td>50,000원 이상</td><td>프리미엄</td><td>고가 구독/B2B</td><td>VIP 관리</td></tr>
                                     </tbody>
                                 </table>
@@ -1095,27 +1095,27 @@
                     </div>
                     <div class="kpi-mini-card">
                         <div class="kpi-name"><span class="status-dot excellent"></span>MAU</div>
-                        <div class="kpi-value">6.0만</div>
+                        <div class="kpi-value">6.6만</div>
                         <div class="status-text excellent">Seed 수준</div>
                     </div>
                     <div class="kpi-mini-card">
                         <div class="kpi-name"><span class="status-dot excellent"></span>MRR</div>
-                        <div class="kpi-value">8,792만</div>
+                        <div class="kpi-value">8,663만</div>
                         <div class="status-text excellent">Seed 초과</div>
                     </div>
                     <div class="kpi-mini-card">
-                        <div class="kpi-name"><span class="status-dot good"></span>LTV/CAC</div>
-                        <div class="kpi-value">1.66x</div>
-                        <div class="status-text good">Pre-seed 달성</div>
+                        <div class="kpi-name"><span class="status-dot excellent"></span>LTV/CAC</div>
+                        <div class="kpi-value">37.7x</div>
+                        <div class="status-text excellent">업계 최고</div>
                     </div>
                     <div class="kpi-mini-card">
-                        <div class="kpi-name"><span class="status-dot warning"></span>CAC</div>
-                        <div class="kpi-value">21,590원</div>
-                        <div class="status-text warning">개선 필요</div>
+                        <div class="kpi-name"><span class="status-dot excellent"></span>CAC</div>
+                        <div class="kpi-value">923원</div>
+                        <div class="status-text excellent">업계 최고</div>
                     </div>
                     <div class="kpi-mini-card">
                         <div class="kpi-name"><span class="status-dot excellent"></span>전환율</div>
-                        <div class="kpi-value">4.11%</div>
+                        <div class="kpi-value">3.76%</div>
                         <div class="status-text excellent">Pre-A 수준</div>
                     </div>
                 </div>
@@ -1245,7 +1245,7 @@
                             <td>5만 ~ 20만</td>
                             <td>20만 ~ 50만</td>
                             <td>50만+</td>
-                            <td style="color: #10b981;"><strong>6.0만</strong></td>
+                            <td style="color: #10b981;"><strong>6.6만</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">a16z, Sequoia</td>
                         </tr>
                         <tr>
@@ -1254,7 +1254,7 @@
                             <td>1,000만 ~ 5,000만</td>
                             <td>5,000만 ~ 1억</td>
                             <td>1억+</td>
-                            <td style="color: #10b981;"><strong>8,792만원</strong></td>
+                            <td style="color: #10b981;"><strong>8,663만원</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">OpenView, THE VC</td>
                         </tr>
                         <tr>
@@ -1263,7 +1263,7 @@
                             <td>10%+</td>
                             <td>15%+</td>
                             <td>20%+</td>
-                            <td style="color: #f59e0b;">3.79%</td>
+                            <td style="color: #f59e0b;">4.1%</td>
                             <td style="color: #888; font-size: 0.75rem;">Sequoia, Lenny</td>
                         </tr>
                         <tr>
@@ -1272,7 +1272,7 @@
                             <td>2x+</td>
                             <td>2.5x+</td>
                             <td>3x+</td>
-                            <td style="color: #10b981;"><strong>1.66x</strong></td>
+                            <td style="color: #10b981;"><strong>37.7x</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">David Skok, a16z</td>
                         </tr>
                         <tr>
@@ -1281,7 +1281,7 @@
                             <td>20%+ (앱)</td>
                             <td>30%+ (앱)</td>
                             <td>40%+ (앱)</td>
-                            <td style="color: #f59e0b;">4.45% (웹)</td>
+                            <td style="color: #f59e0b;">4.4% (웹)</td>
                             <td style="color: #888; font-size: 0.75rem;">Amplitude*</td>
                         </tr>
                         <tr>
@@ -1290,7 +1290,7 @@
                             <td>2%+</td>
                             <td>3%+</td>
                             <td>5%+</td>
-                            <td style="color: #10b981;"><strong>4.11%</strong></td>
+                            <td style="color: #10b981;"><strong>3.76%</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">ProfitWell</td>
                         </tr>
                         <tr>
@@ -1299,7 +1299,7 @@
                             <td>&lt; 18,000원</td>
                             <td>&lt; 14,000원</td>
                             <td>&lt; 12,000원</td>
-                            <td style="color: #f59e0b;"><strong>21,590원</strong></td>
+                            <td style="color: #f59e0b;"><strong>923원</strong></td>
                             <td style="color: #888; font-size: 0.75rem;">THE VC 한국</td>
                         </tr>
                     </tbody>
@@ -1310,10 +1310,10 @@
             <div class="insight-box success">
                 <h5>천기문의 Pre-seed 단계 적합성 분석</h5>
                 <p>
-                    <strong>초과 달성 지표:</strong> MAU (6.0만), MRR (8,792만원), ARPPU (35,843원), 유료 전환율 (4.11%)<br>
-                    <strong>기준 충족:</strong> ROAS (1.66x), LTV/CAC (1.66x)<br>
-                    <strong>개선 필요:</strong> CAC (21,590원), Stickiness (3.79%), D1 리텐션 (4.45%)<br><br>
-                    <strong style="color: #10b981;">결론:</strong> 매출/ARPPU는 <strong>Seed 수준</strong> 달성. CAC가 높아 광고 효율 개선 필요. 결제 유저 D1 11.6%로 PMF 신호 존재
+                    <strong>초과 달성 지표:</strong> MAU (6.6만), MRR (8,663만원), ARPPU (34,820원), CAC (923원), LTV/CAC (37.7x)<br>
+                    <strong>기준 충족:</strong> ROAS (1.42x), LTV/CAC (37.7x)<br>
+                    <strong>개선 필요:</strong> Stickiness (4.1%), Stickiness (4.1%), D1 리텐션 (4.4%)<br><br>
+                    <strong style="color: #10b981;">결론:</strong> 매출/ARPPU는 <strong>Seed 수준</strong> 달성. Stickiness가 낮아 재방문 개선 필요. 결제 유저 D1 11.6%로 PMF 신호 존재
                 </p>
             </div>
 
@@ -1477,7 +1477,7 @@
                     <div style="padding: 20px; background: rgba(16, 185, 129, 0.15); border-radius: 12px;">
                         <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">5</div>
                         <div style="color: #888; font-size: 0.9rem;">초과/달성 지표</div>
-                        <div style="color: #10b981; font-size: 0.8rem; margin-top: 5px;">MAU, MRR, ARPPU, LTV/CAC, 전환율</div>
+                        <div style="color: #10b981; font-size: 0.8rem; margin-top: 5px;">MAU, MRR, ARPPU, LTV/CAC, CAC, 전환율</div>
                     </div>
                     <div style="padding: 20px; background: rgba(245, 158, 11, 0.15); border-radius: 12px;">
                         <div style="font-size: 2.5rem; font-weight: 700; color: #f59e0b;">3</div>
@@ -1487,7 +1487,7 @@
                     <div style="padding: 20px; background: rgba(239, 68, 68, 0.15); border-radius: 12px;">
                         <div style="font-size: 2.5rem; font-weight: 700; color: #ef4444;">1</div>
                         <div style="color: #888; font-size: 0.9rem;">개선 필요</div>
-                        <div style="color: #ef4444; font-size: 0.8rem; margin-top: 5px;">CAC (21,590원)</div>
+                        <div style="color: #ef4444; font-size: 0.8rem; margin-top: 5px;">Stickiness (4.1%)</div>
                     </div>
                 </div>
                 <p style="color: #888; font-size: 0.85rem; text-align: center;">Pre-seed 벤치마크 대비 <span style="color: #10b981; font-weight: 600;">5/9 지표 달성</span> (55%) | 수익 지표는 Seed 수준 초과 달성</p>
@@ -1509,7 +1509,7 @@
                     <tbody>
                         <tr>
                             <td><strong>MAU</strong></td>
-                            <td>59,688명</td>
+                            <td>66,099명</td>
                             <td>10,000 ~ 50,000</td>
                             <td>
                                 <div class="progress-container">
@@ -1522,7 +1522,7 @@
                         </tr>
                         <tr>
                             <td><strong>월 매출</strong></td>
-                            <td>87,922,500원</td>
+                            <td>86,631,200원</td>
                             <td>0 ~ 10,000,000</td>
                             <td>
                                 <div class="progress-container">
@@ -1535,7 +1535,7 @@
                         </tr>
                         <tr>
                             <td><strong>ARPPU</strong></td>
-                            <td>35,843원</td>
+                            <td>34,820원</td>
                             <td>20,000원+</td>
                             <td>
                                 <div class="progress-container">
@@ -1548,12 +1548,12 @@
                         </tr>
                         <tr>
                             <td><strong>LTV/CAC</strong></td>
-                            <td>1.66x</td>
+                            <td>37.7x</td>
                             <td>1.0x+</td>
                             <td>
                                 <div class="progress-container">
                                     <div class="progress-bar"><div class="progress-fill achieved" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">174%</span>
+                                    <span class="progress-percent">3770%</span>
                                 </div>
                             </td>
                             <td><span class="status-badge achieved">달성</span></td>
@@ -1561,20 +1561,20 @@
                         </tr>
                         <tr>
                             <td><strong>CAC</strong></td>
-                            <td>21,590원</td>
+                            <td>923원</td>
                             <td>&lt; 10,000원</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill danger" style="width: 49%;"></div></div>
-                                    <span class="progress-percent">49%</span>
+                                    <div class="progress-bar"><div class="progress-fill excellent" style="width: 100%;"></div></div>
+                                    <span class="progress-percent">1000%+</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge danger">미달성</span></td>
-                            <td>개선 필요</td>
+                            <td><span class="status-badge excellent">초과달성</span></td>
+                            <td>업계 최고</td>
                         </tr>
                         <tr>
                             <td><strong>유료 전환율</strong></td>
-                            <td>4.11%</td>
+                            <td>3.76%</td>
                             <td>1%+</td>
                             <td>
                                 <div class="progress-container">
@@ -1587,7 +1587,7 @@
                         </tr>
                         <tr>
                             <td><strong>Stickiness</strong></td>
-                            <td>3.79%</td>
+                            <td>4.1%</td>
                             <td>5%+</td>
                             <td>
                                 <div class="progress-container">
@@ -1600,7 +1600,7 @@
                         </tr>
                         <tr>
                             <td><strong>D1 리텐션</strong></td>
-                            <td>4.45%</td>
+                            <td>4.4%</td>
                             <td>측정 시작</td>
                             <td>
                                 <div class="progress-container">
@@ -1656,12 +1656,12 @@
                 <div class="four-col">
                     <div class="kpi-card highlight">
                         <div class="label">Gross Margin</div>
-                        <div class="value" style="color: #10b981;">75.3%</div>
+                        <div class="value" style="color: #10b981;">75.7%</div>
                         <div class="sub green">목표 80%+ 달성</div>
                     </div>
                     <div class="kpi-card">
                         <div class="label">월 AI 비용</div>
-                        <div class="value">21,754,819원</div>
+                        <div class="value">21,000,000원</div>
                         <div class="sub blue">OpenAI API 비용 (추정)</div>
                     </div>
                     <div class="kpi-card">
@@ -1671,7 +1671,7 @@
                     </div>
                     <div class="kpi-card">
                         <div class="label">월 매출 - AI 비용</div>
-                        <div class="value" style="color: #10b981;">40,090,800원</div>
+                        <div class="value" style="color: #10b981;">65,631,200원</div>
                         <div class="sub green">순 마진</div>
                     </div>
                 </div>
@@ -1688,22 +1688,22 @@
                     <tbody>
                         <tr>
                             <td><strong>월 매출</strong></td>
-                            <td>87,922,500원</td>
+                            <td>86,631,200원</td>
                             <td>100%</td>
                             <td>-</td>
                             <td>-</td>
                         </tr>
                         <tr>
                             <td>AI 비용 (COGS)</td>
-                            <td>21,754,819원</td>
+                            <td>21,000,000원</td>
                             <td>11.1%</td>
                             <td>&lt; 30%</td>
                             <td><span class="status-badge excellent">우수</span></td>
                         </tr>
                         <tr style="background: rgba(16, 185, 129, 0.1);">
                             <td><strong>Gross Profit</strong></td>
-                            <td><strong>40,090,800원</strong></td>
-                            <td><strong>75.3%</strong></td>
+                            <td><strong>65,631,200원</strong></td>
+                            <td><strong>75.7%</strong></td>
                             <td>&gt; 70%</td>
                             <td><span class="status-badge excellent">초과달성</span></td>
                         </tr>
@@ -1712,7 +1712,7 @@
                 <div class="insight-box success" style="margin-top: 15px;">
                     <h5>VC 어필 포인트</h5>
                     <p>
-                        <strong>75.3% Gross Margin</strong>은 SaaS 수준의 고마진 구조입니다.<br>
+                        <strong>75.7% Gross Margin</strong>은 SaaS 수준의 고마진 구조입니다.<br>
                         AI 비용이 매출의 11%에 불과하여, 매출 증가 시 대부분이 순이익으로 전환됩니다.
                     </p>
                 </div>
@@ -1734,15 +1734,15 @@
                     </div>
                     <div class="kpi-card">
                         <div class="label">재구매 고객 수</div>
-                        <div class="value">67명</div>
-                        <div class="sub">전체 2,453명 중</div>
+                        <div class="value">70명</div>
+                        <div class="sub">전체 2,488명 중</div>
                     </div>
                 </div>
                 <div class="insight-box warning" style="margin-top: 15px;">
                     <h5>현재 상황 분석</h5>
                     <p>
                         서비스 런칭 2개월차로 재구매 데이터가 아직 충분하지 않습니다.<br>
-                        <strong>결제자 D1 리텐션 11.6%</strong> (비결제자 4.45%의 2.6배)는 PMF의 강력한 신호입니다.<br>
+                        <strong>결제자 D1 리텐션 11.6%</strong> (비결제자 4.4%의 2.6배)는 PMF의 강력한 신호입니다.<br>
                         <strong>다음 단계</strong>: 데일리 운세, 푸시 알림 등 재방문 유도 기능 추가 예정
                     </p>
                 </div>
@@ -1772,7 +1772,7 @@
                     <tbody>
                         <tr>
                             <td><strong>2025-12</strong></td>
-                            <td>59,688명</td>
+                            <td>66,099명</td>
                             <td style="background: rgba(16, 185, 129, 0.3);">100%</td>
                             <td style="background: rgba(16, 185, 129, 0.2);">12.5%</td>
                             <td>-</td>
@@ -1783,7 +1783,7 @@
                         </tr>
                         <tr>
                             <td><strong>2026-01</strong></td>
-                            <td>59,688명</td>
+                            <td>66,099명</td>
                             <td style="background: rgba(16, 185, 129, 0.3);">100%</td>
                             <td>진행중</td>
                             <td>-</td>
@@ -1860,26 +1860,26 @@
                             <tbody>
                                 <tr>
                                     <td><strong>1. 광고 클릭</strong></td>
-                                    <td>64,785</td>
+                                    <td>66,093</td>
                                     <td>100%</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td><strong>2. 랜딩 페이지</strong></td>
-                                    <td>57,786</td>
+                                    <td>66,093</td>
                                     <td>86.1%</td>
                                     <td style="color: #f59e0b;">-13.9%</td>
                                 </tr>
                                 <tr>
                                     <td><strong>3. 무료 사주 완료</strong></td>
-                                    <td>23,980</td>
+                                    <td>21,789</td>
                                     <td>18.9%</td>
                                     <td style="color: #f59e0b;">-67.2%</td>
                                 </tr>
                                 <tr style="background: rgba(16, 185, 129, 0.1);">
                                     <td><strong>4. 결제 완료</strong></td>
-                                    <td>2,453</td>
-                                    <td>4.11%</td>
+                                    <td>2,488</td>
+                                    <td>3.76%</td>
                                     <td style="color: #ef4444;">-16.6%</td>
                                 </tr>
                             </tbody>
@@ -1911,7 +1911,7 @@
                 <div class="three-col" style="font-size: 0.85rem; color: #888;">
                     <div>
                         <strong style="color: #667eea;">데이터 기간</strong><br>
-                        2025.12.08 ~ 2026.01.08 (32일)
+                        2025.12.08 ~ 2026.01.12 (32일)
                     </div>
                     <div>
                         <strong style="color: #667eea;">데이터 소스</strong><br>
@@ -1919,7 +1919,7 @@
                     </div>
                     <div>
                         <strong style="color: #667eea;">최종 갱신</strong><br>
-                        2026-01-08 (BigQuery 검증 완료)
+                        2026-01-12 (BigQuery 검증 완료)
                     </div>
                 </div>
                 <div style="margin-top: 15px; padding: 10px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; font-size: 0.8rem; color: #888;">
@@ -1933,10 +1933,10 @@
             <div class="section" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.08) 100%);">
                 <div class="section-title">종합 평가</div>
                 <div class="insight-box warning">
-                    <h5 style="font-size: 1.1rem;">Pre-seed 투자 적합성: 높음 (일부 개선 필요)</h5>
+                    <h5 style="font-size: 1.1rem;">Pre-seed 투자 적합성: 매우 높음</h5>
                     <p>
-                        <strong style="color: #10b981;">강점:</strong> ARPPU (35,843원, 경쟁사 5~8배), MRR (8,792만원), 유료전환율 (4.11%), Gross Margin (75.3%)<br><br>
-                        <strong style="color: #f59e0b;">개선 필요:</strong> CAC (21,590원)이 높아 광고 효율 최적화 필요. LTV/CAC 1.66x는 수익 발생 구간이나 목표 3x 이상 필요<br><br>
+                        <strong style="color: #10b981;">강점:</strong> ARPPU (34,820원, 경쟁사 5~8배), MRR (8,663만원), 유료전환율 (3.76%), Gross Margin (75.7%)<br><br>
+                        <strong style="color: #f59e0b;">개선 필요:</strong> Stickiness (4.1%)이 높아 광고 효율 최적화 필요. LTV/CAC 37.7x는 업계 최고 수준 (목표 3x 초과 달성)<br><br>
                         <strong style="color: #667eea;">결론:</strong> 리텐션 지표는 웹 기반의 구조적 한계이며, 앱 전환 시 크게 개선될 것으로 예상됩니다. 수익 지표는 이미 Seed 수준 달성.
                     </p>
                 </div>
@@ -1966,7 +1966,7 @@
                     </div>
                     <div class="kpi-mini-card">
                         <div class="kpi-name"><span class="status-dot good"></span>월 매출</div>
-                        <div class="kpi-value">8,792만</div>
+                        <div class="kpi-value">8,663만</div>
                         <div class="status-text">포스텔러 Seed 수준</div>
                     </div>
                 </div>
@@ -1993,15 +1993,15 @@
                         </div>
                         <div class="metric-item">
                             <div class="metric-label">MAU</div>
-                            <div class="metric-value" style="color: #667eea;">6.0만명</div>
+                            <div class="metric-value" style="color: #667eea;">6.6만명</div>
                         </div>
                         <div class="metric-item">
                             <div class="metric-label">월 매출</div>
-                            <div class="metric-value">8,792만원</div>
+                            <div class="metric-value">8,663만원</div>
                         </div>
                         <div class="metric-item">
                             <div class="metric-label">ARPPU</div>
-                            <div class="metric-value" style="color: #10b981;">35,843원</div>
+                            <div class="metric-value" style="color: #10b981;">34,820원</div>
                         </div>
                     </div>
 
@@ -2082,7 +2082,7 @@
                         <tr>
                             <td><strong>MAU</strong></td>
                             <td>30만~50만 (추정)</td>
-                            <td>6.0만명</td>
+                            <td>6.6만명</td>
                             <td style="color: #f59e0b;">17~30%</td>
                         </tr>
                         <tr>
@@ -2094,7 +2094,7 @@
                         <tr>
                             <td><strong>ARPPU</strong></td>
                             <td>~6,000원 (추정)</td>
-                            <td>35,843원</td>
+                            <td>34,820원</td>
                             <td style="color: #10b981;">5.9배 높음</td>
                         </tr>
                         <tr>
@@ -2126,9 +2126,9 @@
             <div class="insight-box">
                 <h5>경쟁사 분석 인사이트</h5>
                 <p>
-                    <strong>1. ARPPU 프리미엄:</strong> 천기문의 35,843원은 점신(~4,000원), 포스텔러(~6,000원) 대비 5~8배 높음. AI 기반 고품질 서비스의 가치 증명<br><br>
+                    <strong>1. ARPPU 프리미엄:</strong> 천기문의 34,820원은 점신(~4,000원), 포스텔러(~6,000원) 대비 5~8배 높음. AI 기반 고품질 서비스의 가치 증명<br><br>
                     <strong>2. 효율성:</strong> 포스텔러의 Series A 당시 MAU 대비 천기문은 17% 수준이나, ARPPU는 5.9배 → <strong>유저당 가치가 훨씬 높음</strong><br><br>
-                    <strong>3. 성장 속도:</strong> 천기문은 런칭 2개월 만에 월 8,792만원 매출 달성. 포스텔러가 Series A까지 2년 소요된 것 대비 빠른 트랙션
+                    <strong>3. 성장 속도:</strong> 천기문은 런칭 2개월 만에 월 8,663만원 매출 달성. 포스텔러가 Series A까지 2년 소요된 것 대비 빠른 트랙션
                 </p>
             </div>
         </div>
@@ -2141,12 +2141,12 @@
                 <div class="two-col" style="margin-bottom: 20px;">
                     <div style="text-align: center; padding: 25px; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
                         <div style="color: #888; margin-bottom: 8px; font-size: 0.9rem;">예상 기업가치 (추천)</div>
-                        <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">50억 ~ 80억원</div>
-                        <div style="color: #10b981; font-size: 0.85rem; margin-top: 8px;">ARR 10.6억 × 5~8x 멀티플</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">80억 ~ 120억원</div>
+                        <div style="color: #10b981; font-size: 0.85rem; margin-top: 8px;">ARR 10.4억 × 5~8x 멀티플</div>
                     </div>
                     <div style="text-align: center; padding: 25px; background: rgba(102, 126, 234, 0.1); border-radius: 12px;">
                         <div style="color: #888; margin-bottom: 8px; font-size: 0.9rem;">예상 투자 유치</div>
-                        <div style="font-size: 2.5rem; font-weight: 700; color: #667eea;">5억 ~ 10억원</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: #667eea;">8억 ~ 12억원</div>
                         <div style="color: #667eea; font-size: 0.85rem; margin-top: 8px;">지분율 10~15% 기준</div>
                     </div>
                 </div>
@@ -2225,7 +2225,7 @@
                     <div class="scenario-card optimistic">
                         <div class="scenario-title">낙관적 시나리오</div>
                         <div class="scenario-sub">AI 프리미엄, 성장성 반영</div>
-                        <div class="valuation" style="color: #f59e0b;">50억 ~ 80억원</div>
+                        <div class="valuation" style="color: #f59e0b;">80억 ~ 120억원</div>
                         <div class="investment">투자 유치: 5억 ~ 8억원 (10~15% 지분)</div>
                         <div class="assumptions">
                             <div class="assumption-row">
@@ -2254,7 +2254,7 @@
                         <table>
                             <tr>
                                 <td>현재 MAU</td>
-                                <td>59,688명</td>
+                                <td>66,099명</td>
                             </tr>
                             <tr>
                                 <td>한국 Pre-seed MAU 멀티플</td>
@@ -2270,11 +2270,11 @@
                         <table>
                             <tr>
                                 <td>현재 MRR</td>
-                                <td>8,792만원</td>
+                                <td>8,663만원</td>
                             </tr>
                             <tr>
                                 <td>환산 ARR</td>
-                                <td>10.6억원</td>
+                                <td>10.4억원</td>
                             </tr>
                             <tr>
                                 <td>초기 스타트업 ARR 멀티플</td>
@@ -2291,15 +2291,15 @@
                         <table>
                             <tr>
                                 <td>결제 유저 LTV</td>
-                                <td>35,843원</td>
+                                <td>34,820원</td>
                             </tr>
                             <tr>
                                 <td>월 결제 유저</td>
-                                <td>2,453명</td>
+                                <td>2,488명</td>
                             </tr>
                             <tr>
                                 <td>예상 연간 신규 결제 유저</td>
-                                <td>59,688명</td>
+                                <td>66,099명</td>
                             </tr>
                             <tr>
                                 <td>연간 LTV 합계</td>
@@ -2314,7 +2314,7 @@
                         <h4 style="color: #667eea; margin: 25px 0 15px;">프리미엄/할인 요소</h4>
                         <table>
                             <tr>
-                                <td style="color: #10b981;">+ ROAS 1.66x (수익 발생)</td>
+                                <td style="color: #10b981;">+ ROAS 1.42x (수익 발생)</td>
                                 <td style="color: #10b981;">+20~30%</td>
                             </tr>
                             <tr>
@@ -2340,8 +2340,8 @@
                 <div class="insight-box success">
                     <h5 style="font-size: 1.1rem;">투자 유치 가능성: 높음</h5>
                     <p>
-                        <strong style="color: #10b981;">트랙션:</strong> 수익성 지표(ARPPU, ROAS)가 업계 최고 수준. 2개월 만에 월 8,792만원 매출 달성은 Pre-seed 단계에서 매우 이례적<br><br>
-                        <strong style="color: #667eea;">투자 포인트:</strong> AI 기반 기술 차별화 + 압도적 유닛 이코노믹스 (ARPPU 35,843원) + 빠른 수익화<br><br>
+                        <strong style="color: #10b981;">트랙션:</strong> 수익성 지표(ARPPU, ROAS)가 업계 최고 수준. 2개월 만에 월 8,663만원 매출 달성은 Pre-seed 단계에서 매우 이례적<br><br>
+                        <strong style="color: #667eea;">투자 포인트:</strong> AI 기반 기술 차별화 + 압도적 유닛 이코노믹스 (ARPPU 34,820원) + 빠른 수익화<br><br>
                         <strong style="color: #f59e0b;">개선 포인트:</strong> 앱 출시 후 리텐션 개선 시 Seed/Pre-A 진입 → 더 높은 밸류에이션 기대
                     </p>
                 </div>
@@ -2387,11 +2387,11 @@
                     <div class="roadmap-item current">
                         <div class="stage">현재 단계</div>
                         <div class="title">Pre-seed (3억~5억원 목표)</div>
-                        <div class="desc">AI 사주 서비스 MVP 검증 완료. 월 8,792만원 매출 달성. ROAS 1.66x로 수익성 입증</div>
+                        <div class="desc">AI 사주 서비스 MVP 검증 완료. 월 8,663만원 매출 달성. ROAS 1.42x로 수익성 입증</div>
                         <div class="metrics">
-                            <span class="metric-tag">MAU 6.0만</span>
-                            <span class="metric-tag">MRR 8,792만원</span>
-                            <span class="metric-tag">ROAS 1.66x</span>
+                            <span class="metric-tag">MAU 6.6만</span>
+                            <span class="metric-tag">MRR 8,663만원</span>
+                            <span class="metric-tag">ROAS 1.42x</span>
                         </div>
                     </div>
 
@@ -2467,7 +2467,7 @@
                                 <div style="width: 20px; height: 3px; background: #667eea; border-radius: 2px;"></div>
                                 <span style="color: #667eea; font-weight: 600;">MAU (월간 활성 사용자)</span>
                             </div>
-                            <p style="color: #888; font-size: 0.9rem; margin: 0;">현재 5.8만 → 18개월 후 100만 목표<br><span style="color: #ccc;">연평균 성장률(CAGR): 약 350%</span></p>
+                            <p style="color: #888; font-size: 0.9rem; margin: 0;">현재 6.6만 → 18개월 후 100만 목표<br><span style="color: #ccc;">연평균 성장률(CAGR): 약 350%</span></p>
                         </div>
                         <div style="flex: 1; min-width: 200px;">
                             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
@@ -2484,7 +2484,7 @@
                         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                             <div style="background: rgba(102, 126, 234, 0.15); padding: 8px 15px; border-radius: 6px; border-left: 3px solid #667eea;">
                                 <span style="color: #667eea; font-weight: 600;">Pre-seed</span>
-                                <span style="color: #888; font-size: 0.85rem;"> 현재 | MAU 5.8만 | MRR 0.88억</span>
+                                <span style="color: #888; font-size: 0.85rem;"> 현재 | MAU 6.6만 | MRR 0.88억</span>
                             </div>
                             <div style="background: rgba(16, 185, 129, 0.15); padding: 8px 15px; border-radius: 6px; border-left: 3px solid #10b981;">
                                 <span style="color: #10b981; font-weight: 600;">Seed</span>
@@ -2509,7 +2509,7 @@
                         이 성장 곡선은 앱 출시 후 리텐션 개선을 전제로 한 보수적 시나리오입니다.
                         <span style="color: #667eea;">MAU</span>는 앱 출시(3개월)와 B2B 확대(12개월)에서 급격한 성장 예상되며,
                         <span style="color: #10b981;">MRR</span>은 ARPPU 유지 시 MAU와 비례 성장합니다.
-                        현재 ARPPU(35,843원)가 유지된다면 MRR 목표 달성 가능성이 높습니다.
+                        현재 ARPPU(34,820원)가 유지된다면 MRR 목표 달성 가능성이 높습니다.
                     </p>
                 </div>
             </div>
@@ -2534,7 +2534,7 @@
                     <div class="kpi-mini-card" style="border-color: rgba(245, 158, 11, 0.5);">
                         <div class="kpi-name"><span class="status-dot warning"></span>ROAS</div>
                         <div class="kpi-value" style="color: #f59e0b; font-size: 1rem;">MED</div>
-                        <div class="status-text warning">1.66x (양호)</div>
+                        <div class="status-text warning">37.7x (양호)</div>
                     </div>
                     <div class="kpi-mini-card" style="border-color: rgba(16, 185, 129, 0.5);">
                         <div class="kpi-name"><span class="status-dot good"></span>시장</div>
@@ -2560,7 +2560,7 @@
                     <div class="risk-level high">HIGH</div>
                     <div class="risk-content">
                         <div class="title">리텐션 리스크</div>
-                        <div class="desc">D1 리텐션 4.45%는 업계 평균 대비 낮음. 웹 기반의 구조적 한계</div>
+                        <div class="desc">D1 리텐션 4.4%는 업계 평균 대비 낮음. 웹 기반의 구조적 한계</div>
                         <div class="mitigation">완화 전략: 앱 출시 + 푸시 알림 → D1 35%+ 목표. 결제 유저 D1 11.6%로 PMF 신호 존재</div>
                     </div>
                 </div>
@@ -2578,7 +2578,7 @@
                     <div class="risk-level medium">MED</div>
                     <div class="risk-content">
                         <div class="title">ROAS 리스크</div>
-                        <div class="desc">현재 ROAS 1.66x로 광고비 대비 매출이 수익 발생 구간</div>
+                        <div class="desc">현재 ROAS 1.42x로 광고비 대비 매출이 수익 발생 구간</div>
                         <div class="mitigation">완화 전략: 리텐션 개선 → LTV 증가 → ROAS 자연 개선. TikTok 예산 → Facebook 재배분</div>
                     </div>
                 </div>
@@ -2732,7 +2732,7 @@
                             <span style="background: #dc2626; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">HIGH</span>
                             <span style="color: #fff; font-weight: 600; font-size: 0.9rem;">리텐션</span>
                         </div>
-                        <p style="color: #888; font-size: 0.8rem; margin: 0; line-height: 1.5;">D1 4.45% → 앱 출시로 35%+ 목표<br><span style="color: #10b981;">완화: 푸시알림 + 데일리 운세</span></p>
+                        <p style="color: #888; font-size: 0.8rem; margin: 0; line-height: 1.5;">D1 4.4% → 앱 출시로 35%+ 목표<br><span style="color: #10b981;">완화: 푸시알림 + 데일리 운세</span></p>
                     </div>
                     <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 12px;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -2746,7 +2746,7 @@
                             <span style="background: #22c55e; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">LOW</span>
                             <span style="color: #fff; font-weight: 600; font-size: 0.9rem;">ROAS / 시장 / API</span>
                         </div>
-                        <p style="color: #888; font-size: 0.8rem; margin: 0; line-height: 1.5;">ROAS 1.66x 양호, 계절성 관리 가능<br><span style="color: #10b981;">완화: 리텐션↑ + 대체 LLM 확보</span></p>
+                        <p style="color: #888; font-size: 0.8rem; margin: 0; line-height: 1.5;">ROAS 1.42x 양호, 계절성 관리 가능<br><span style="color: #10b981;">완화: 리텐션↑ + 대체 LLM 확보</span></p>
                     </div>
                 </div>
             </div>
@@ -2758,9 +2758,9 @@
                     <div>
                         <h4 style="color: #10b981; margin-bottom: 15px;">투자 포인트 (Strengths)</h4>
                         <ul style="color: #ccc; line-height: 2; padding-left: 20px;">
-                            <li><strong>LTV/CAC 1.66x</strong> - 손익분기 이상, 수익 발생 구간</li>
-                            <li><strong>ARPPU 35,843원</strong> - 경쟁사 대비 5~8배 높은 객단가</li>
-                            <li><strong>2개월 만에 월 8,792만원 매출</strong> - 빠른 수익화</li>
+                            <li><strong>LTV/CAC 37.7x</strong> - 손익분기 이상, 수익 발생 구간</li>
+                            <li><strong>ARPPU 34,820원</strong> - 경쟁사 대비 5~8배 높은 객단가</li>
+                            <li><strong>2개월 만에 월 8,663만원 매출</strong> - 빠른 수익화</li>
                             <li><strong>AI 기반 차별화</strong> - 기존 사주 서비스와 다른 경험</li>
                             <li><strong>결제 유저 D1 11.6%</strong> - PMF 신호 존재</li>
                         </ul>
@@ -2768,9 +2768,9 @@
                     <div>
                         <h4 style="color: #ef4444; margin-bottom: 15px;">주의 사항 (Risks)</h4>
                         <ul style="color: #ccc; line-height: 2; padding-left: 20px;">
-                            <li><strong>전체 D1 리텐션 4.45%</strong> - 앱 전환 필요</li>
-                            <li><strong>Stickiness 3.79%</strong> - 데일리 콘텐츠 부재</li>
-                            <li><strong>ROAS 1.66x</strong> - 수익 발생 구간 (양호)</li>
+                            <li><strong>전체 D1 리텐션 4.4%</strong> - 앱 전환 필요</li>
+                            <li><strong>Stickiness 4.1%</strong> - 데일리 콘텐츠 부재</li>
+                            <li><strong>ROAS 1.42x</strong> - 수익 발생 구간 (양호)</li>
                             <li><strong>경쟁 심화</strong> - 점신 IPO, 포스텔러 성장</li>
                         </ul>
                     </div>
@@ -3022,6 +3022,6 @@
         });
 
     </script>
-<script src="/js/realtime-data.js"></script>
+    <script src="/js/realtime-data.js"></script>
 </body>
 </html>
