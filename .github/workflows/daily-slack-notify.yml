@@ -26,6 +26,24 @@ jobs:
           BIGQUERY_KEY_B64: ${{ secrets.BIGQUERY_KEY }}
           SUPABASE_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
         run: |
-          echo "$BIGQUERY_KEY_B64" | base64 -d > /tmp/bq-key.json
+          echo "=== Debug Info ==="
+          echo "BIGQUERY_KEY_B64 length: ${#BIGQUERY_KEY_B64}"
+          echo "SLACK_WEBHOOK_URL set: $([ -n "$SLACK_WEBHOOK_URL" ] && echo 'yes' || echo 'no')"
+          echo "SUPABASE_PASSWORD set: $([ -n "$SUPABASE_PASSWORD" ] && echo 'yes' || echo 'no')"
+
+          if [ -z "$BIGQUERY_KEY_B64" ]; then
+            echo "ERROR: BIGQUERY_KEY secret is empty!"
+            exit 1
+          fi
+
+          echo "$BIGQUERY_KEY_B64" | base64 -d > /tmp/bq-key.json 2>&1 || {
+            echo "ERROR: Failed to decode BIGQUERY_KEY"
+            echo "First 50 chars: ${BIGQUERY_KEY_B64:0:50}..."
+            exit 1
+          }
+
+          echo "Decoded key file size: $(wc -c < /tmp/bq-key.json) bytes"
+          echo "Key file first line: $(head -c 50 /tmp/bq-key.json)..."
+
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/bq-key.json
           python scripts/slack_report.py
