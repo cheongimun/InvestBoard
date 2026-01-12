@@ -1,0 +1,9 @@
+{
+  "name": "invest-board",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/bigquery": "^7.3.0",
+    "pg": "^8.11.3"
+  }
+}
