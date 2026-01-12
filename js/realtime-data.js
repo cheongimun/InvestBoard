@@ -183,9 +183,10 @@
       });
 
       // Update LTV/CAC badge in header
-      const ltvBadge = document.querySelector('.badge-yellow');
-      if (ltvBadge && ltvBadge.textContent.includes('LTV/CAC')) {
-        ltvBadge.textContent = `LTV/CAC ${formatX(data.ltvCac)} (${data.ltvCac >= 3 ? '우수' : data.ltvCac >= 1 ? '양호' : '개선필요'})`;
+      const ltvBadge = document.querySelector('[data-kpi="ltvCacBadge"]');
+      if (ltvBadge) {
+        const status = data.ltvCac >= 3 ? '달성' : '목표: 3x 이상';
+        ltvBadge.textContent = `LTV/CAC ${formatX(data.ltvCac)} (${status})`;
       }
 
       // Update status indicators based on thresholds
