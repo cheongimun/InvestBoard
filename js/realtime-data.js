@@ -60,7 +60,19 @@
         conversionRatePct: formatPercent(data.conversionRate),
         d1RetentionPct: formatPercent(data.d1Retention),
         stickinessPct: formatPercent(data.stickiness),
-        netMargin: formatNum(Math.round(data.revenue * data.grossMargin / 100)) + '원'
+        netMargin: formatNum(Math.round(data.revenue * data.grossMargin / 100)) + '원',
+        // New API fields
+        ltv: formatWon(data.ltv || data.arppu),
+        ltvCacX: formatX(data.ltvCac),
+        avgPurchases: (data.avgPurchases || 1).toFixed(2) + '회',
+        paymentFee: formatManWonUnit(data.paymentFee || 0),
+        // Percentage formats with % sign
+        d1RetentionPct: formatPercent(data.d1Retention),
+        conversionRatePct: formatPercent(data.conversionRate),
+        stickinessPct: formatPercent(data.stickiness),
+        grossMarginPct: formatPercentShort(data.grossMargin) + '%',
+        repurchaseRatePct: formatPercent(data.repurchaseRate),
+        roasX: formatX(data.roas)
       };
 
       // Update all elements with data-kpi attribute
