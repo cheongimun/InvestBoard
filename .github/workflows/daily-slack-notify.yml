@@ -1,45 +1,34 @@
 name: Daily Slack Dashboard Report
 
-  on:
-    schedule:
-      # 매일 UTC 23:00 = 한국시간 08:00
-      - cron: '0 23 * * *'
-    workflow_dispatch:
-    push:
-      paths:
-        - '.github/workflows/daily-slack-notify.yml'
+on:
+  schedule:
+    - cron: '0 23 * * *'
+  workflow_dispatch:
 
-  jobs:
-    notify:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        - name: Setup Python
-          uses: actions/setup-python@v4
-          with:
-            python-version: '3.11'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-        - name: Install dependencies
-          run: pip install requests
+      - name: Install dependencies
+        run: pip install requests
 
-        - name: Restore previous data cache
-          uses: actions/cache@v4
-          with:
-            path: scripts/previous_data.json
-            key: kpi-data-${{ github.run_number }}
-            restore-keys: |
-              kpi-data-
+      - name: Restore previous data cache
+        uses: actions/cache@v4
+        with:
+          path: scripts/previous_data.json
+          key: kpi-data-${{ github.run_number }}
+          restore-keys: |
+            kpi-data-
 
-        - name: Sync Dashboard and Send Slack
-          env:
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          run: python scripts/slack_report.py
-
-        - name: Save data for next comparison
-          uses: actions/cache/save@v4
-          if: always()
-          with:
-            path: scripts/previous_data.json
-            key: kpi-data-${{ github.run_number }}
+      - name: Sync Dashboard and Send Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python scripts/slack_report.py
