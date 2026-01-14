@@ -134,13 +134,21 @@ module.exports = async (req, res) => {
       data.cac = Math.round(adSpend / data.payingUsers);
     }
     if (data.arppu && data.cac) {
-      data.ltvCac = Math.round(data.arppu / data.cac * 100) / 100;
+      // LTV = ARPPU * 평균구매횟수 (재구매율 기반)
+      // 평균구매횟수 = 1 + repurchaseRate/(100-repurchaseRate)
+      const avgPurchases = 1 + (data.repurchaseRate / Math.max(100 - data.repurchaseRate, 1));
+      data.ltv = Math.round(data.arppu * avgPurchases);
+      data.ltvCac = Math.round(data.ltv / data.cac * 100) / 100;
+      data.avgPurchases = Math.round(avgPurchases * 100) / 100;
     }
     if (data.revenue && adSpend) {
       data.roas = Math.round(data.revenue / adSpend * 100) / 100;
     }
     if (data.revenue && aiCost) {
-      data.grossMargin = Math.round((1 - aiCost / data.revenue) * 1000) / 10;
+      // Gross Margin = (매출 - AI비용 - 결제수수료2.5%) / 매출
+      const paymentFee = data.revenue * 0.025;
+      data.paymentFee = Math.round(paymentFee);
+      data.grossMargin = Math.round((1 - (aiCost + paymentFee) / data.revenue) * 1000) / 10;
     }
 
     // ARR
