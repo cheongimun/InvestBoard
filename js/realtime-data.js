@@ -53,7 +53,14 @@
         grossMargin: formatPercentShort(data.grossMargin),
         repurchaseRate: formatPercent(data.repurchaseRate),
         payingUsers: formatNum(data.payingUsers) + '명',
-        arr: formatEokShort(data.arr)
+        arr: formatEokShort(data.arr),
+        mauFull: formatNum(data.mau) + '명',
+        revenueWon: formatNum(data.revenue) + '원',
+        arppuWon: formatWon(data.arppu),
+        conversionRatePct: formatPercent(data.conversionRate),
+        d1RetentionPct: formatPercent(data.d1Retention),
+        stickinessPct: formatPercent(data.stickiness),
+        netMargin: formatNum(Math.round(data.revenue * data.grossMargin / 100)) + '원'
       };
 
       // Update all elements with data-kpi attribute
