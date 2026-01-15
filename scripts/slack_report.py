@@ -2,16 +2,16 @@ import os
 import sys
 import json
 import requests
-from datetime import datetime
-from pathlib import Path
+import psycopg2
+from datetime import datetime, timedelta
 
 print("=== Starting Slack Report ===")
 
-# Step 1: First call the dashboard API to refresh data
+# Configuration
 DASHBOARD_API = "https://invest-board-seven.vercel.app/api/kpi"
-PREV_DATA_FILE = Path(__file__).parent / "previous_data.json"
 
-print("Step 1: Refreshing dashboard data...")
+# Step 1: Fetch current data from API
+print("Step 1: Fetching dashboard data...")
 try:
     api_response = requests.get(DASHBOARD_API, timeout=60)
     api_data = api_response.json()
@@ -21,159 +21,213 @@ try:
         sys.exit(1)
 
     data = api_data['data']
-    print(f"Dashboard data refreshed: {data['dataStart']} ~ {data['dataEnd']}")
+    print(f"Data fetched: {data['dataStart']} ~ {data['dataEnd']}")
     print(f"MAU: {data['mau']:,}, Revenue: {data['revenue']:,}")
 
 except Exception as e:
-    print(f"Failed to refresh dashboard: {e}")
+    print(f"Failed to fetch data: {e}")
     sys.exit(1)
 
-# Step 2: Load previous data for comparison
-print("Step 2: Loading previous data for comparison...")
+# Step 2: Connect to Supabase and get previous data
+print("Step 2: Connecting to Supabase...")
 prev_data = None
 try:
-    if PREV_DATA_FILE.exists():
-        with open(PREV_DATA_FILE, 'r', encoding='utf-8') as f:
-            prev_data = json.load(f)
-        print(f"Previous data loaded: {prev_data.get('dataEnd', 'N/A')}")
+    conn = psycopg2.connect(
+        host='aws-1-ap-northeast-2.pooler.supabase.com',
+        port=6543,
+        database='postgres',
+        user='postgres.jlutbjmjpreauyanjzdd',
+        password=os.environ.get('SUPABASE_PASSWORD'),
+        connect_timeout=10
+    )
+    cursor = conn.cursor()
+
+    # Get previous day's data
+    cursor.execute("""
+        SELECT mau, revenue, paying_users, arppu, conversion_rate, cac, ltv, ltv_cac,
+               roas, gross_margin, d1_retention, stickiness, repurchase_rate, recorded_at
+        FROM kpi_history
+        ORDER BY recorded_at DESC
+        LIMIT 1
+    """)
+    row = cursor.fetchone()
+
+    if row:
+        prev_data = {
+            'mau': row[0], 'revenue': row[1], 'payingUsers': row[2], 'arppu': row[3],
+            'conversionRate': row[4], 'cac': row[5], 'ltv': row[6], 'ltvCac': row[7],
+            'roas': row[8], 'grossMargin': row[9], 'd1Retention': row[10],
+            'stickiness': row[11], 'repurchaseRate': row[12], 'recordedAt': row[13]
+        }
+        print(f"Previous data loaded from: {prev_data['recordedAt']}")
     else:
-        print("No previous data found (first run)")
+        print("No previous data found in database")
+
 except Exception as e:
-    print(f"Failed to load previous data: {e}")
+    print(f"Supabase connection error: {e}")
+    print("Continuing without comparison data...")
 
 # Step 3: Calculate changes
 def calc_change(current, previous, is_inverse=False):
-    """Calculate change and return emoji indicator"""
+    """Calculate change and return emoji + percentage"""
     if previous is None or previous == 0:
         return "", ""
 
-    diff = current - previous
-    pct = (diff / previous) * 100
+    diff = current - float(previous)
+    pct = (diff / float(previous)) * 100
 
-    if abs(pct) < 0.1:
-        return "→", f"({pct:+.1f}%)"
+    if abs(pct) < 0.5:
+        return "➡️", f"({pct:+.1f}%)"
 
-    # For inverse metrics (like CAC), down is good
-    if is_inverse:
+    if is_inverse:  # Lower is better (CAC)
         if diff < 0:
-            return ":small_red_triangle_down:", f"({pct:+.1f}%)"  # down is good for CAC
+            return "✅", f"({pct:+.1f}%)"
         else:
-            return ":small_red_triangle:", f"({pct:+.1f}%)"
-    else:
+            return "⚠️", f"({pct:+.1f}%)"
+    else:  # Higher is better
         if diff > 0:
-            return ":small_red_triangle:", f"({pct:+.1f}%)"  # up is good
+            return "📈", f"({pct:+.1f}%)"
         else:
-            return ":small_red_triangle_down:", f"({pct:+.1f}%)"
+            return "📉", f"({pct:+.1f}%)"
 
-def format_with_change(label, value, prev_value, format_str, is_inverse=False):
-    """Format value with change indicator"""
-    emoji, change = calc_change(value, prev_value, is_inverse)
-    if change:
-        return f"{label}\n{format_str} {emoji} {change}"
-    return f"{label}\n{format_str}"
+# Calculate all changes
+changes = {}
+metrics = ['mau', 'revenue', 'arppu', 'payingUsers', 'roas', 'ltvCac', 'grossMargin',
+           'conversionRate', 'd1Retention', 'stickiness', 'repurchaseRate']
+inverse_metrics = ['cac']
 
-# Get previous values
-prev_revenue = prev_data.get('revenue') if prev_data else None
-prev_mau = prev_data.get('mau') if prev_data else None
-prev_arppu = prev_data.get('arppu') if prev_data else None
-prev_paying = prev_data.get('payingUsers') if prev_data else None
-prev_roas = prev_data.get('roas') if prev_data else None
-prev_ltvcac = prev_data.get('ltvCac') if prev_data else None
-prev_gm = prev_data.get('grossMargin') if prev_data else None
-prev_conv = prev_data.get('conversionRate') if prev_data else None
-prev_d1 = prev_data.get('d1Retention') if prev_data else None
-prev_sticky = prev_data.get('stickiness') if prev_data else None
-prev_cac = prev_data.get('cac') if prev_data else None
-prev_repurchase = prev_data.get('repurchaseRate') if prev_data else None
+for m in metrics:
+    prev_val = prev_data.get(m) if prev_data else None
+    changes[m] = calc_change(data.get(m, 0), prev_val)
 
-# Step 4: Build Slack message with comparisons
-print("Step 3: Building Slack message with comparisons...")
+for m in inverse_metrics:
+    prev_val = prev_data.get(m) if prev_data else None
+    changes[m] = calc_change(data.get(m, 0), prev_val, is_inverse=True)
+
+# Step 4: Generate investor summary comment
+print("Step 3: Generating investor summary...")
+
+def generate_investor_comment(data, prev_data, changes):
+    """Generate AI-like investor summary based on metrics"""
+    comments = []
+
+    # Revenue trend
+    if prev_data and prev_data.get('revenue'):
+        rev_change = (data['revenue'] - prev_data['revenue']) / prev_data['revenue'] * 100
+        if rev_change > 5:
+            comments.append(f"📊 MRR {rev_change:.1f}% 성장 - 긍정적 트렌드")
+        elif rev_change < -5:
+            comments.append(f"⚠️ MRR {rev_change:.1f}% 하락 - 원인 분석 필요")
+
+    # LTV/CAC analysis
+    ltv_cac = data.get('ltvCac', 0)
+    if ltv_cac >= 3:
+        comments.append(f"✅ LTV/CAC {ltv_cac}x - 투자 적격 수준")
+    elif ltv_cac >= 2:
+        comments.append(f"🟡 LTV/CAC {ltv_cac}x - 양호, 3x 목표 추진")
+    else:
+        comments.append(f"⚠️ LTV/CAC {ltv_cac}x - 3x 미달, CAC 최적화 필요")
+
+    # Retention analysis
+    d1 = data.get('d1Retention', 0)
+    if d1 < 10:
+        comments.append(f"🔴 D1 리텐션 {d1}% - PMF 재검토 권장")
+
+    # Gross Margin
+    gm = data.get('grossMargin', 0)
+    if gm >= 80:
+        comments.append(f"✅ Gross Margin {gm}% - 우수한 수익구조")
+    elif gm < 70:
+        comments.append(f"⚠️ Gross Margin {gm}% - 비용구조 개선 필요")
+
+    # Repurchase rate
+    repurchase = data.get('repurchaseRate', 0)
+    if repurchase < 5:
+        comments.append(f"📌 재구매율 {repurchase}% - 고객 락인 전략 필요")
+
+    if not comments:
+        comments.append("📊 전체적으로 안정적인 지표 유지 중")
+
+    return " | ".join(comments[:3])  # Max 3 comments
+
+investor_comment = generate_investor_comment(data, prev_data, changes)
+
+# Step 5: Build Slack message
+print("Step 4: Building Slack message...")
 
 now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
-start_dash = data['dataStart']
-end_dash = data['dataEnd']
 
-# Calculate change indicators
-rev_emoji, rev_change = calc_change(data['revenue'], prev_revenue)
-mau_emoji, mau_change = calc_change(data['mau'], prev_mau)
-arppu_emoji, arppu_change = calc_change(data['arppu'], prev_arppu)
-paying_emoji, paying_change = calc_change(data['payingUsers'], prev_paying)
-roas_emoji, roas_change = calc_change(data['roas'], prev_roas)
-ltvcac_emoji, ltvcac_change = calc_change(data['ltvCac'], prev_ltvcac)
-gm_emoji, gm_change = calc_change(data['grossMargin'], prev_gm)
-conv_emoji, conv_change = calc_change(data['conversionRate'], prev_conv)
-d1_emoji, d1_change = calc_change(data['d1Retention'], prev_d1)
-sticky_emoji, sticky_change = calc_change(data['stickiness'], prev_sticky)
-cac_emoji, cac_change = calc_change(data['cac'], prev_cac, is_inverse=True)
-repurchase_emoji, repurchase_change = calc_change(data['repurchaseRate'], prev_repurchase)
-
-# Format values with changes
-def fmt_with_change(value, emoji, change):
-    if change:
-        return f"{value} {emoji}{change}"
-    return value
+def fmt(emoji, change):
+    if emoji and change:
+        return f" {emoji}{change}"
+    return ""
 
 payload = {
     "blocks": [
         {
             "type": "header",
-            "text": {"type": "plain_text", "text": ":bar_chart: 투자 대시보드 일간 리포트", "emoji": True}
+            "text": {"type": "plain_text", "text": "📊 투자 대시보드 일간 리포트", "emoji": True}
         },
         {
             "type": "context",
-            "elements": [{"type": "mrkdwn", "text": f"*{now_str}* | 데이터 기간: {start_dash} ~ {end_dash}"}]
+            "elements": [{"type": "mrkdwn", "text": f"*{now_str}* | 데이터: {data['dataStart']} ~ {data['dataEnd']}"}]
         },
         {"type": "divider"},
         {
             "type": "section",
             "fields": [
-                {"type": "mrkdwn", "text": f":moneybag: *월 매출 (MRR)*\n₩{data['revenue']:,} {rev_emoji}{rev_change}"},
-                {"type": "mrkdwn", "text": f":busts_in_silhouette: *MAU*\n{data['mau']:,}명 {mau_emoji}{mau_change}"}
+                {"type": "mrkdwn", "text": f"💰 *MRR*\n₩{data['revenue']:,}{fmt(*changes['revenue'])}"},
+                {"type": "mrkdwn", "text": f"👥 *MAU*\n{data['mau']:,}명{fmt(*changes['mau'])}"}
             ]
         },
         {
             "type": "section",
             "fields": [
-                {"type": "mrkdwn", "text": f":dollar: *ARPPU*\n₩{data['arppu']:,} {arppu_emoji}{arppu_change}"},
-                {"type": "mrkdwn", "text": f":shopping_cart: *결제 유저*\n{data['payingUsers']:,}명 {paying_emoji}{paying_change}"}
-            ]
-        },
-        {"type": "divider"},
-        {
-            "type": "section",
-            "fields": [
-                {"type": "mrkdwn", "text": f":chart_with_upwards_trend: *ROAS*\n{data['roas']}x {roas_emoji}{roas_change}"},
-                {"type": "mrkdwn", "text": f":chart: *LTV/CAC*\n{data['ltvCac']}x {ltvcac_emoji}{ltvcac_change}"}
-            ]
-        },
-        {
-            "type": "section",
-            "fields": [
-                {"type": "mrkdwn", "text": f":bar_chart: *Gross Margin*\n{data['grossMargin']}% {gm_emoji}{gm_change}"},
-                {"type": "mrkdwn", "text": f":arrows_counterclockwise: *전환율*\n{data['conversionRate']}% {conv_emoji}{conv_change}"}
+                {"type": "mrkdwn", "text": f"💵 *ARPPU*\n₩{data['arppu']:,}{fmt(*changes['arppu'])}"},
+                {"type": "mrkdwn", "text": f"🛒 *결제 유저*\n{data['payingUsers']:,}명{fmt(*changes['payingUsers'])}"}
             ]
         },
         {"type": "divider"},
         {
             "type": "section",
             "fields": [
-                {"type": "mrkdwn", "text": f":date: *D1 리텐션*\n{data['d1Retention']}% {d1_emoji}{d1_change}"},
-                {"type": "mrkdwn", "text": f":zap: *Stickiness*\n{data['stickiness']}% {sticky_emoji}{sticky_change}"}
+                {"type": "mrkdwn", "text": f"📈 *ROAS*\n{data['roas']}x{fmt(*changes['roas'])}"},
+                {"type": "mrkdwn", "text": f"📊 *LTV/CAC*\n{data['ltvCac']}x{fmt(*changes['ltvCac'])}"}
             ]
         },
         {
             "type": "section",
             "fields": [
-                {"type": "mrkdwn", "text": f":dart: *CAC*\n₩{data['cac']:,} {cac_emoji}{cac_change}"},
-                {"type": "mrkdwn", "text": f":repeat: *재구매율*\n{data['repurchaseRate']}% {repurchase_emoji}{repurchase_change}"}
+                {"type": "mrkdwn", "text": f"💹 *Gross Margin*\n{data['grossMargin']}%{fmt(*changes['grossMargin'])}"},
+                {"type": "mrkdwn", "text": f"🔄 *전환율*\n{data['conversionRate']}%{fmt(*changes['conversionRate'])}"}
             ]
+        },
+        {"type": "divider"},
+        {
+            "type": "section",
+            "fields": [
+                {"type": "mrkdwn", "text": f"📅 *D1 리텐션*\n{data['d1Retention']}%{fmt(*changes['d1Retention'])}"},
+                {"type": "mrkdwn", "text": f"⚡ *Stickiness*\n{data['stickiness']}%{fmt(*changes['stickiness'])}"}
+            ]
+        },
+        {
+            "type": "section",
+            "fields": [
+                {"type": "mrkdwn", "text": f"🎯 *CAC*\n₩{data['cac']:,}{fmt(*changes['cac'])}"},
+                {"type": "mrkdwn", "text": f"🔁 *재구매율*\n{data['repurchaseRate']}%{fmt(*changes['repurchaseRate'])}"}
+            ]
+        },
+        {"type": "divider"},
+        {
+            "type": "section",
+            "text": {"type": "mrkdwn", "text": f"*🤖 투자자 인사이트*\n{investor_comment}"}
         },
         {"type": "divider"},
         {
             "type": "actions",
             "elements": [{
                 "type": "button",
-                "text": {"type": "plain_text", "text": ":bar_chart: 대시보드 보기", "emoji": True},
+                "text": {"type": "plain_text", "text": "📊 대시보드 보기", "emoji": True},
                 "url": "https://invest-board-seven.vercel.app/",
                 "style": "primary"
             }]
@@ -181,8 +235,8 @@ payload = {
     ]
 }
 
-# Step 5: Send Slack message
-print("Step 4: Sending Slack message...")
+# Step 6: Send Slack message
+print("Step 5: Sending Slack message...")
 
 slack_url = os.environ.get("SLACK_WEBHOOK_URL")
 if not slack_url:
@@ -196,13 +250,28 @@ if response.status_code != 200:
     print(f"Slack error: {response.text}")
     sys.exit(1)
 
-# Step 6: Save current data as previous for next run
-print("Step 5: Saving current data for next comparison...")
+# Step 7: Save current data to Supabase for next comparison
+print("Step 6: Saving data to Supabase...")
 try:
-    with open(PREV_DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Data saved to {PREV_DATA_FILE}")
+    if conn:
+        cursor.execute("""
+            INSERT INTO kpi_history
+            (data_start, data_end, mau, revenue, paying_users, arppu, conversion_rate,
+             cac, ltv, ltv_cac, roas, gross_margin, d1_retention, stickiness,
+             repurchase_rate, arr, ad_spend, ai_cost)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            data['dataStart'], data['dataEnd'], data['mau'], data['revenue'],
+            data['payingUsers'], data['arppu'], data['conversionRate'],
+            data['cac'], data.get('ltv', data['arppu']), data['ltvCac'], data['roas'],
+            data['grossMargin'], data['d1Retention'], data['stickiness'],
+            data['repurchaseRate'], data['arr'], data['adSpend'], data['aiCost']
+        ))
+        conn.commit()
+        print("Data saved to kpi_history table")
+        cursor.close()
+        conn.close()
 except Exception as e:
-    print(f"Warning: Failed to save data: {e}")
+    print(f"Failed to save data: {e}")
 
 print("=== SUCCESS: Dashboard synced and Slack message sent ===")
