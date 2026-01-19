@@ -41,7 +41,8 @@
       // KPI value mappings for data-kpi attributes
       const kpiFormats = {
         mau: formatMan(data.mau),
-        mrr: formatManWon(data.revenue),
+        mrr: formatEok(data.revenue) + '원',
+        mrrMan: formatManWon(data.revenue) + '원',
         arppu: formatWon(data.arppu),
         cac: formatWon(data.cac),
         ltv: formatWon(data.arppu) + '+',
@@ -50,10 +51,11 @@
         conversionRate: formatPercent(data.conversionRate),
         d1Retention: formatPercent(data.d1Retention),
         stickiness: formatPercent(data.stickiness),
-        grossMargin: formatPercentShort(data.grossMargin),
+        grossMargin: formatPercentShort(data.grossMargin) + '%',
         repurchaseRate: formatPercent(data.repurchaseRate),
         payingUsers: formatNum(data.payingUsers) + '명',
-        arr: formatEokShort(data.arr)
+        arr: formatEokShort(data.arr) + '원',
+        revenue: formatEok(data.revenue) + '원'
       };
 
       // Update all elements with data-kpi attribute
