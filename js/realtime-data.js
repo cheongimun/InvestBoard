@@ -53,26 +53,7 @@
         grossMargin: formatPercentShort(data.grossMargin),
         repurchaseRate: formatPercent(data.repurchaseRate),
         payingUsers: formatNum(data.payingUsers) + '명',
-        arr: formatEokShort(data.arr),
-        mauFull: formatNum(data.mau) + '명',
-        revenueWon: formatNum(data.revenue) + '원',
-        arppuWon: formatWon(data.arppu),
-        conversionRatePct: formatPercent(data.conversionRate),
-        d1RetentionPct: formatPercent(data.d1Retention),
-        stickinessPct: formatPercent(data.stickiness),
-        netMargin: formatNum(Math.round(data.revenue * data.grossMargin / 100)) + '원',
-        // New API fields
-        ltv: formatWon(data.ltv || data.arppu),
-        ltvCacX: formatX(data.ltvCac),
-        avgPurchases: (data.avgPurchases || 1).toFixed(2) + '회',
-        paymentFee: formatManWonUnit(data.paymentFee || 0),
-        // Percentage formats with % sign
-        d1RetentionPct: formatPercent(data.d1Retention),
-        conversionRatePct: formatPercent(data.conversionRate),
-        stickinessPct: formatPercent(data.stickiness),
-        grossMarginPct: formatPercentShort(data.grossMargin) + '%',
-        repurchaseRatePct: formatPercent(data.repurchaseRate),
-        roasX: formatX(data.roas)
+        arr: formatEokShort(data.arr)
       };
 
       // Update all elements with data-kpi attribute
@@ -253,6 +234,35 @@
 
       // Update status indicators based on thresholds
       updateStatusIndicators(data);
+
+      // 데이터 출처 및 갱신 정보 업데이트
+      const dataPeriodEl = document.getElementById('data-period');
+      const dataUpdatedEl = document.getElementById('data-updated');
+      const dataRealtimeEl = document.getElementById('data-realtime-status');
+
+      if (dataPeriodEl && data.dataStart && data.dataEnd) {
+        const startDate = data.dataStart.replace(/-/g, '.');
+        const endDate = data.dataEnd.replace(/-/g, '.');
+        const days = Math.round((new Date(data.dataEnd) - new Date(data.dataStart)) / (1000 * 60 * 60 * 24));
+        dataPeriodEl.textContent = `${startDate} ~ ${endDate} (${days}일)`;
+      }
+
+      if (dataUpdatedEl) {
+        const now = new Date();
+        const updateTime = now.toLocaleString('ko-KR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        dataUpdatedEl.innerHTML = `${updateTime} <span style="color: #10b981;">(실시간)</span>`;
+      }
+
+      if (dataRealtimeEl) {
+        dataRealtimeEl.textContent = '✓ API 연동 성공';
+        dataRealtimeEl.style.color = '#10b981';
+      }
 
       console.log('[Realtime] Dashboard fully updated with real data');
 
