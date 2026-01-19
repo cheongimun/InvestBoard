@@ -560,6 +560,7 @@
             <div class="nav-tab" onclick="showTab('valuation')">기업가치 추정</div>
             <div class="nav-tab" onclick="showTab('roadmap')">투자 로드맵</div>
             <div class="nav-tab" onclick="showTab('risk')">리스크 분석</div>
+            <div class="nav-tab" onclick="showTab('trends')">월별 추이</div>
         </div>
 
         <!-- 탭 1: 용어 & 목차 -->
@@ -2785,7 +2786,170 @@
                 </div>
             </div>
         </div>
+
+        <!-- 탭 8: 월별 추이 -->
+        <div id="trends" class="tab-content">
+            <!-- 로딩 상태 -->
+            <div id="trends-loading" class="section" style="text-align: center; padding: 60px;">
+                <div style="font-size: 2rem; margin-bottom: 20px;">📊</div>
+                <div style="color: #888;">월별 데이터를 불러오는 중...</div>
+                <div style="margin-top: 20px; width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 20px auto;">
+                    <div style="width: 30%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 2px; animation: loading 1.5s ease-in-out infinite;"></div>
+                </div>
+            </div>
+
+            <!-- 메인 콘텐츠 (로드 후 표시) -->
+            <div id="trends-content" style="display: none;">
+                <!-- 요약 카드 -->
+                <div class="section">
+                    <div class="section-title">월간 성장 요약</div>
+                    <div class="four-col" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
+                        <div class="kpi-card">
+                            <div class="label">MAU 성장</div>
+                            <div class="value" id="trends-mau-growth">-</div>
+                            <div class="sub" id="trends-mau-change">전월 대비</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="label">MRR 성장</div>
+                            <div class="value" id="trends-mrr-growth">-</div>
+                            <div class="sub" id="trends-mrr-change">전월 대비</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="label">CAC 변화</div>
+                            <div class="value" id="trends-cac-growth">-</div>
+                            <div class="sub" id="trends-cac-change">전월 대비</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="label">LTV/CAC 변화</div>
+                            <div class="value" id="trends-ltvcac-growth">-</div>
+                            <div class="sub" id="trends-ltvcac-change">전월 대비</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MAU & MRR 추이 차트 -->
+                <div class="section">
+                    <div class="section-title">MAU & MRR 월별 추이</div>
+                    <div style="position: relative; height: 350px;">
+                        <canvas id="trendsMainChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 효율성 지표 추이 -->
+                <div class="two-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                    <div class="section">
+                        <div class="section-title">CAC & LTV/CAC 추이</div>
+                        <div style="position: relative; height: 280px;">
+                            <canvas id="trendsCacChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">전환율 & Stickiness 추이</div>
+                        <div style="position: relative; height: 280px;">
+                            <canvas id="trendsConversionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 월별 상세 데이터 테이블 -->
+                <div class="section">
+                    <div class="section-title">월별 KPI 상세 (최근 12개월)</div>
+                    <div style="overflow-x: auto;">
+                        <table id="trends-table">
+                            <thead>
+                                <tr>
+                                    <th>월</th>
+                                    <th>MAU</th>
+                                    <th>MRR</th>
+                                    <th>ARPPU</th>
+                                    <th>결제 유저</th>
+                                    <th>전환율</th>
+                                    <th>CAC</th>
+                                    <th>LTV/CAC</th>
+                                    <th>ROAS</th>
+                                    <th>D1 리텐션</th>
+                                    <th>Stickiness</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trends-table-body">
+                                <!-- 동적으로 채워짐 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- MoM 변화 히트맵 테이블 -->
+                <div class="section">
+                    <div class="section-title">월간 성장률 비교 (MoM %)</div>
+                    <div style="overflow-x: auto;">
+                        <table id="trends-mom-table">
+                            <thead>
+                                <tr>
+                                    <th>월</th>
+                                    <th>MAU</th>
+                                    <th>MRR</th>
+                                    <th>ARPPU</th>
+                                    <th>전환율</th>
+                                    <th>CAC</th>
+                                    <th>LTV/CAC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trends-mom-body">
+                                <!-- 동적으로 채워짐 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="color: #666; font-size: 0.75rem; margin-top: 10px;">
+                        <span style="display: inline-block; width: 12px; height: 12px; background: rgba(16, 185, 129, 0.3); border-radius: 2px; margin-right: 4px;"></span> 긍정적 변화 (성장/비용감소)
+                        <span style="display: inline-block; width: 12px; height: 12px; background: rgba(239, 68, 68, 0.3); border-radius: 2px; margin-left: 15px; margin-right: 4px;"></span> 부정적 변화 (감소/비용증가)
+                    </p>
+                </div>
+
+                <!-- 데이터 출처 -->
+                <div class="insight-box" style="background: rgba(102, 126, 234, 0.1); border-color: rgba(102, 126, 234, 0.3);">
+                    <h5>데이터 출처</h5>
+                    <p>
+                        <strong>BigQuery:</strong> GA4 이벤트 데이터, Supabase 주문 데이터<br>
+                        <strong>PostgreSQL:</strong> 광고비 (adset_performance), AI 비용 (api_costs)<br>
+                        <strong>갱신 주기:</strong> 실시간 API 호출 시 자동 집계
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <style>
+        @keyframes loading {
+            0% { width: 30%; margin-left: 0; }
+            50% { width: 50%; margin-left: 25%; }
+            100% { width: 30%; margin-left: 70%; }
+        }
+        #trends-table th, #trends-table td,
+        #trends-mom-table th, #trends-mom-table td {
+            text-align: center;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+        .trend-neutral { color: #888; }
+        .change-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .change-badge.positive { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .change-badge.negative { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .change-badge.neutral { background: rgba(255, 255, 255, 0.1); color: #888; }
+        .heatmap-positive { background: rgba(16, 185, 129, 0.2); }
+        .heatmap-negative { background: rgba(239, 68, 68, 0.2); }
+        .heatmap-strong-positive { background: rgba(16, 185, 129, 0.4); }
+        .heatmap-strong-negative { background: rgba(239, 68, 68, 0.4); }
+    </style>
 
     <script>
         // 탭 전환
@@ -3022,5 +3186,6 @@
 
     </script>
     <script src="/js/realtime-data.js"></script>
+    <script src="/js/trends-data.js"></script>
 </body>
 </html>
