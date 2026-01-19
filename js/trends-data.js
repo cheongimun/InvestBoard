@@ -1,6 +1,6 @@
 /**
  * 월별 추이 데이터 로더
- * /api/kpi-history에서 데이터를 가져와 차트와 테이블 업데이트
+ * 페이지 로드 시 /api/kpi-history에서 데이터를 가져와 차트와 테이블 업데이트
  */
 
 (function() {
@@ -300,7 +300,7 @@
 
     try {
       console.log('[Trends] Fetching historical data...');
-      const response = await fetch('/api/kpi-history?months=12');
+      const response = await fetch('/api/kpi-history?months=6');
       const result = await response.json();
 
       if (!result.success) {
@@ -323,8 +323,10 @@
       updateSummaryCards(data);
 
       // 로딩 숨기고 콘텐츠 표시
-      document.getElementById('trends-loading').style.display = 'none';
-      document.getElementById('trends-content').style.display = 'block';
+      const loadingEl = document.getElementById('trends-loading');
+      const contentEl = document.getElementById('trends-content');
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (contentEl) contentEl.style.display = 'block';
 
       trendsDataLoaded = true;
       console.log('[Trends] Dashboard updated successfully');
@@ -342,36 +344,35 @@
         <div style="font-size: 2rem; margin-bottom: 20px;">⚠️</div>
         <div style="color: #ef4444;">데이터 로드 실패</div>
         <div style="color: #888; margin-top: 10px; font-size: 0.85rem;">${message}</div>
-        <button onclick="window.loadTrendsData()" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">다시 시도</button>
+        <button onclick="window.retryTrendsLoad()" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">다시 시도</button>
       `;
     }
   }
 
-  // 탭 클릭 시 데이터 로드 (Lazy Loading)
-  const originalShowTab = window.showTab;
-  window.showTab = function(tabId) {
-    if (typeof originalShowTab === 'function') {
-      originalShowTab.call(this, tabId);
+  // 재시도 함수
+  window.retryTrendsLoad = function() {
+    trendsDataLoaded = false;
+    const loading = document.getElementById('trends-loading');
+    if (loading) {
+      loading.innerHTML = `
+        <div style="font-size: 2rem; margin-bottom: 20px;">📊</div>
+        <div style="color: #888;">월별 데이터를 불러오는 중...</div>
+        <div style="margin-top: 20px; width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin: 20px auto;">
+          <div style="width: 30%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 2px; animation: loading 1.5s ease-in-out infinite;"></div>
+        </div>
+      `;
     }
-    if (tabId === 'trends' && !trendsDataLoaded) {
-      loadTrendsData();
-    }
+    loadTrendsData();
   };
+
+  // 페이지 로드 시 즉시 데이터 로드 (다른 탭 데이터처럼)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadTrendsData);
+  } else {
+    loadTrendsData();
+  }
 
   // 외부 접근용
   window.loadTrendsData = loadTrendsData;
-
-  // 페이지 로드 시 trends 탭이 이미 활성화되어 있으면 로드
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      if (document.getElementById('trends')?.classList.contains('active')) {
-        loadTrendsData();
-      }
-    });
-  } else {
-    if (document.getElementById('trends')?.classList.contains('active')) {
-      loadTrendsData();
-    }
-  }
 
 })();
