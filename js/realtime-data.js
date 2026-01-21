@@ -276,6 +276,9 @@
       // Update status indicators based on thresholds
       updateStatusIndicators(data);
 
+      // Update benchmark achievement table (달성률 요약)
+      updateBenchmarkTable(data, formatNum, formatWon, formatPercent, formatX);
+
       // 데이터 출처 및 갱신 정보 업데이트
       const dataPeriodEl = document.getElementById('data-period');
       const dataUpdatedEl = document.getElementById('data-updated');
@@ -325,6 +328,240 @@
     };
 
     // This could be extended to update status badges dynamically
+  }
+
+  function updateBenchmarkTable(data, formatNum, formatWon, formatPercent, formatX) {
+    // Pre-seed 벤치마크 기준값
+    const benchmarks = {
+      mau: { target: 50000, type: 'min' },           // 10,000 ~ 50,000 -> 50,000 상한 기준
+      revenue: { target: 10000000, type: 'min' },   // 0 ~ 10,000,000 -> 1천만 상한 기준
+      arppu: { target: 20000, type: 'min' },        // 20,000원+
+      ltvCac: { target: 3.0, type: 'min' },         // 3.0x+
+      cac: { target: 10000, type: 'max' },          // < 10,000원 (낮을수록 좋음)
+      conversionRate: { target: 1.0, type: 'min' }, // 1%+
+      stickiness: { target: 5.0, type: 'min' },     // 5%+
+      d1Retention: { target: null, type: 'measure' }, // 측정 시작
+      paidD1: { target: null, type: 'measure' }     // 측정중
+    };
+
+    // 달성률 계산 함수
+    function calculateAchievement(value, benchmark) {
+      if (benchmark.type === 'measure' || benchmark.target === null) {
+        return { percent: null, status: 'measure' };
+      }
+
+      let percent;
+      if (benchmark.type === 'max') {
+        // 낮을수록 좋은 지표 (CAC)
+        percent = (benchmark.target / value) * 100;
+      } else {
+        // 높을수록 좋은 지표
+        percent = (value / benchmark.target) * 100;
+      }
+
+      let status;
+      if (percent >= 150) {
+        status = 'excellent'; // 초과달성
+      } else if (percent >= 100) {
+        status = 'achieved';  // 달성
+      } else if (percent >= 70) {
+        status = 'warning';   // 진행중/미달
+      } else {
+        status = 'danger';    // 개선필요
+      }
+
+      return { percent: Math.round(percent), status };
+    }
+
+    // 각 지표별 달성률 계산
+    const achievements = {
+      mau: calculateAchievement(data.mau, benchmarks.mau),
+      revenue: calculateAchievement(data.revenue, benchmarks.revenue),
+      arppu: calculateAchievement(data.arppu, benchmarks.arppu),
+      ltvCac: calculateAchievement(data.ltvCac, benchmarks.ltvCac),
+      cac: calculateAchievement(data.cac, benchmarks.cac),
+      conversionRate: calculateAchievement(data.conversionRate, benchmarks.conversionRate),
+      stickiness: calculateAchievement(data.stickiness, benchmarks.stickiness),
+      d1Retention: calculateAchievement(data.d1Retention, benchmarks.d1Retention),
+      paidD1: { percent: null, status: 'measure' }
+    };
+
+    // 상태별 텍스트 및 클래스 매핑
+    const statusLabels = {
+      excellent: '초과달성',
+      achieved: '달성',
+      warning: '미달',
+      danger: '미달',
+      measure: '측정중'
+    };
+
+    const statusMeanings = {
+      excellent: 'Seed 수준',
+      achieved: 'Pre-seed 달성',
+      warning: '개선 필요',
+      danger: '비용 절감 필요',
+      measure: '웹 한계'
+    };
+
+    // DOM 업데이트
+    const updates = {
+      // MAU
+      benchmarkMauValue: formatNum(data.mau) + '명',
+      benchmarkMauPercent: achievements.mau.percent + '%',
+      benchmarkMauStatus: statusLabels[achievements.mau.status],
+      benchmarkMauMeaning: achievements.mau.percent >= 100 ? 'Seed 수준' : '개선 필요',
+
+      // Revenue
+      benchmarkRevenueValue: formatNum(data.revenue) + '원',
+      benchmarkRevenuePercent: achievements.revenue.percent + '%',
+      benchmarkRevenueStatus: statusLabels[achievements.revenue.status],
+      benchmarkRevenueMeaning: achievements.revenue.percent >= 100 ? 'Seed 수준' : '개선 필요',
+
+      // ARPPU
+      benchmarkArppuValue: formatWon(data.arppu),
+      benchmarkArppuPercent: achievements.arppu.percent + '%',
+      benchmarkArppuStatus: statusLabels[achievements.arppu.status],
+      benchmarkArppuMeaning: achievements.arppu.percent >= 100 ? 'Seed 수준' : '개선 필요',
+
+      // LTV/CAC
+      benchmarkLtvCacValue: formatX(data.ltvCac),
+      benchmarkLtvCacPercent: achievements.ltvCac.percent + '%',
+      benchmarkLtvCacStatus: statusLabels[achievements.ltvCac.status],
+      benchmarkLtvCacMeaning: achievements.ltvCac.percent >= 100 ? '달성' : `3x 목표 대비 ${achievements.ltvCac.percent}%`,
+
+      // CAC
+      benchmarkCacValue: formatWon(data.cac),
+      benchmarkCacPercent: achievements.cac.percent + '%',
+      benchmarkCacStatus: statusLabels[achievements.cac.status],
+      benchmarkCacMeaning: achievements.cac.percent >= 100 ? '달성' : '비용 절감 필요',
+
+      // Conversion Rate
+      benchmarkConversionValue: formatPercent(data.conversionRate),
+      benchmarkConversionPercent: achievements.conversionRate.percent + '%',
+      benchmarkConversionStatus: statusLabels[achievements.conversionRate.status],
+      benchmarkConversionMeaning: achievements.conversionRate.percent >= 100 ? 'Seed 수준' : '개선 필요',
+
+      // Stickiness
+      benchmarkStickinessValue: formatPercent(data.stickiness),
+      benchmarkStickinessPercent: achievements.stickiness.percent + '%',
+      benchmarkStickinessStatus: statusLabels[achievements.stickiness.status],
+      benchmarkStickinessMeaning: achievements.stickiness.percent >= 100 ? '달성' : '개선 필요',
+
+      // D1 Retention
+      benchmarkD1Value: formatPercent(data.d1Retention),
+      benchmarkD1Percent: '-',
+      benchmarkD1Status: '측정중',
+      benchmarkD1Meaning: '웹 한계',
+
+      // Paid D1
+      benchmarkPaidD1Value: '11.6%',
+      benchmarkPaidD1Percent: '-',
+      benchmarkPaidD1Status: '결제자 참여도 2.8배',
+      benchmarkPaidD1Meaning: '가치 검증'
+    };
+
+    // 텍스트 업데이트
+    Object.keys(updates).forEach(key => {
+      document.querySelectorAll(`[data-kpi="${key}"]`).forEach(el => {
+        el.textContent = updates[key];
+      });
+    });
+
+    // Progress bar 업데이트
+    const barUpdates = {
+      benchmarkMauBar: { percent: Math.min(achievements.mau.percent, 100), status: achievements.mau.status },
+      benchmarkRevenueBar: { percent: Math.min(achievements.revenue.percent, 100), status: achievements.revenue.status },
+      benchmarkArppuBar: { percent: Math.min(achievements.arppu.percent, 100), status: achievements.arppu.status },
+      benchmarkLtvCacBar: { percent: Math.min(achievements.ltvCac.percent, 100), status: achievements.ltvCac.status },
+      benchmarkCacBar: { percent: Math.min(achievements.cac.percent, 100), status: achievements.cac.status },
+      benchmarkConversionBar: { percent: Math.min(achievements.conversionRate.percent, 100), status: achievements.conversionRate.status },
+      benchmarkStickinessBar: { percent: Math.min(achievements.stickiness.percent, 100), status: achievements.stickiness.status },
+      benchmarkD1Bar: { percent: 100, status: 'achieved' },
+      benchmarkPaidD1Bar: { percent: 100, status: 'achieved' }
+    };
+
+    Object.keys(barUpdates).forEach(key => {
+      document.querySelectorAll(`[data-kpi="${key}"]`).forEach(el => {
+        el.style.width = barUpdates[key].percent + '%';
+        // 상태에 따른 클래스 업데이트
+        el.className = el.className.replace(/excellent|achieved|warning|danger/g, '').trim();
+        el.classList.add(barUpdates[key].status);
+      });
+    });
+
+    // Status badge 클래스 업데이트
+    const statusBadges = {
+      benchmarkMauStatus: achievements.mau.status,
+      benchmarkRevenueStatus: achievements.revenue.status,
+      benchmarkArppuStatus: achievements.arppu.status,
+      benchmarkLtvCacStatus: achievements.ltvCac.status,
+      benchmarkCacStatus: achievements.cac.status,
+      benchmarkConversionStatus: achievements.conversionRate.status,
+      benchmarkStickinessStatus: achievements.stickiness.status,
+      benchmarkD1Status: 'achieved',
+      benchmarkPaidD1Status: 'achieved'
+    };
+
+    Object.keys(statusBadges).forEach(key => {
+      document.querySelectorAll(`[data-kpi="${key}"]`).forEach(el => {
+        el.className = 'status-badge ' + statusBadges[key];
+      });
+    });
+
+    // 달성률 요약 업데이트
+    const achievedMetrics = [];
+    const progressMetrics = [];
+    const needsImprovementMetrics = [];
+
+    const metricNames = {
+      mau: 'MAU',
+      revenue: 'MRR',
+      arppu: 'ARPPU',
+      ltvCac: 'LTV/CAC',
+      cac: 'CAC',
+      conversionRate: '전환율',
+      stickiness: 'Stickiness',
+      d1Retention: 'D1 리텐션',
+      paidD1: '결제자 D1'
+    };
+
+    Object.keys(achievements).forEach(key => {
+      const achievement = achievements[key];
+      const name = metricNames[key];
+
+      if (achievement.status === 'measure') {
+        progressMetrics.push(name);
+      } else if (achievement.percent >= 100) {
+        achievedMetrics.push(name);
+      } else if (achievement.percent >= 70) {
+        progressMetrics.push(name);
+      } else {
+        needsImprovementMetrics.push(name);
+      }
+    });
+
+    // 요약 카드 업데이트
+    const summaryUpdates = {
+      achievedCount: achievedMetrics.length.toString(),
+      achievedList: achievedMetrics.join(', ') || '-',
+      progressCount: progressMetrics.length.toString(),
+      progressList: progressMetrics.join(', ') || '-',
+      needsImprovementCount: needsImprovementMetrics.length.toString(),
+      needsImprovementList: needsImprovementMetrics.join(', ') || '-',
+      achievementSummary: `${achievedMetrics.length}/9 지표 달성`
+    };
+
+    Object.keys(summaryUpdates).forEach(key => {
+      document.querySelectorAll(`[data-kpi="${key}"]`).forEach(el => {
+        el.textContent = summaryUpdates[key];
+      });
+    });
+
+    console.log('[Realtime] Benchmark table updated:', {
+      achieved: achievedMetrics,
+      progress: progressMetrics,
+      needsImprovement: needsImprovementMetrics
+    });
   }
 
   // Load on page ready
