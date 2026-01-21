@@ -1548,22 +1548,22 @@
                 <div class="section-title" style="margin-bottom: 15px;">달성률 요약</div>
                 <div class="three-col" style="text-align: center; margin-bottom: 20px;">
                     <div style="padding: 20px; background: rgba(16, 185, 129, 0.15); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">5</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;" data-kpi="achievedCount">5</div>
                         <div style="color: #888; font-size: 0.9rem;">초과/달성 지표</div>
-                        <div style="color: #10b981; font-size: 0.8rem; margin-top: 5px;">MAU, MRR, ARPPU, LTV/CAC, CAC, 전환율</div>
+                        <div style="color: #10b981; font-size: 0.8rem; margin-top: 5px;" data-kpi="achievedList">MAU, MRR, ARPPU, 전환율</div>
                     </div>
                     <div style="padding: 20px; background: rgba(245, 158, 11, 0.15); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: #f59e0b;">3</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: #f59e0b;" data-kpi="progressCount">3</div>
                         <div style="color: #888; font-size: 0.9rem;">진행/측정 중</div>
-                        <div style="color: #f59e0b; font-size: 0.8rem; margin-top: 5px;">Stickiness, D1 리텐션, 결제자 D1</div>
+                        <div style="color: #f59e0b; font-size: 0.8rem; margin-top: 5px;" data-kpi="progressList">D1 리텐션, 결제자 D1</div>
                     </div>
                     <div style="padding: 20px; background: rgba(239, 68, 68, 0.15); border-radius: 12px;">
-                        <div style="font-size: 2.5rem; font-weight: 700; color: #ef4444;">1</div>
+                        <div style="font-size: 2.5rem; font-weight: 700; color: #ef4444;" data-kpi="needsImprovementCount">1</div>
                         <div style="color: #888; font-size: 0.9rem;">개선 필요</div>
-                        <div style="color: #ef4444; font-size: 0.8rem; margin-top: 5px;">Stickiness (4.1%)</div>
+                        <div style="color: #ef4444; font-size: 0.8rem; margin-top: 5px;" data-kpi="needsImprovementList">Stickiness</div>
                     </div>
                 </div>
-                <p style="color: #888; font-size: 0.85rem; text-align: center;">Pre-seed 벤치마크 대비 <span style="color: #10b981; font-weight: 600;">5/9 지표 달성</span> (55%) | 수익 지표는 Seed 수준 초과 달성</p>
+                <p style="color: #888; font-size: 0.85rem; text-align: center;">Pre-seed 벤치마크 대비 <span style="color: #10b981; font-weight: 600;" data-kpi="achievementSummary">5/9 지표 달성</span> (55%) | 수익 지표는 Seed 수준 초과 달성</p>
             </div>
 
             <div class="section">
@@ -1580,122 +1580,122 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-benchmark="mau">
                             <td><strong>MAU</strong></td>
-                            <td>66,099명</td>
+                            <td data-kpi="benchmarkMauValue">66,099명</td>
                             <td>10,000 ~ 50,000</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill excellent" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">112%</span>
+                                    <div class="progress-bar"><div class="progress-fill excellent" data-kpi="benchmarkMauBar" style="width: 100%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkMauPercent">112%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge excellent">초과달성</span></td>
-                            <td>Seed 수준</td>
+                            <td><span class="status-badge excellent" data-kpi="benchmarkMauStatus">초과달성</span></td>
+                            <td data-kpi="benchmarkMauMeaning">Seed 수준</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="revenue">
                             <td><strong>월 매출</strong></td>
-                            <td>86,631,200원</td>
+                            <td data-kpi="benchmarkRevenueValue">86,631,200원</td>
                             <td>0 ~ 10,000,000</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill excellent" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">451%</span>
+                                    <div class="progress-bar"><div class="progress-fill excellent" data-kpi="benchmarkRevenueBar" style="width: 100%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkRevenuePercent">451%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge excellent">초과달성</span></td>
-                            <td>Seed 수준</td>
+                            <td><span class="status-badge excellent" data-kpi="benchmarkRevenueStatus">초과달성</span></td>
+                            <td data-kpi="benchmarkRevenueMeaning">Seed 수준</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="arppu">
                             <td><strong>ARPPU</strong></td>
-                            <td>34,820원</td>
+                            <td data-kpi="benchmarkArppuValue">34,820원</td>
                             <td>20,000원+</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill excellent" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">178%</span>
+                                    <div class="progress-bar"><div class="progress-fill excellent" data-kpi="benchmarkArppuBar" style="width: 100%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkArppuPercent">178%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge excellent">초과달성</span></td>
-                            <td>Seed 수준</td>
+                            <td><span class="status-badge excellent" data-kpi="benchmarkArppuStatus">초과달성</span></td>
+                            <td data-kpi="benchmarkArppuMeaning">Seed 수준</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="ltvCac">
                             <td><strong>LTV/CAC</strong></td>
-                            <td data-kpi="ltvCac">1.72x</td>
+                            <td data-kpi="benchmarkLtvCacValue">1.72x</td>
                             <td>3.0x+</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill warning" style="width: 57%;"></div></div>
-                                    <span class="progress-percent">57%</span>
+                                    <div class="progress-bar"><div class="progress-fill warning" data-kpi="benchmarkLtvCacBar" style="width: 57%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkLtvCacPercent">57%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge warning">미달</span></td>
-                            <td>3x 목표 대비 57%</td>
+                            <td><span class="status-badge warning" data-kpi="benchmarkLtvCacStatus">미달</span></td>
+                            <td data-kpi="benchmarkLtvCacMeaning">3x 목표 대비 57%</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="cac">
                             <td><strong>CAC</strong></td>
-                            <td data-kpi="cac">20,903원</td>
+                            <td data-kpi="benchmarkCacValue">20,903원</td>
                             <td>&lt; 10,000원</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill danger" style="width: 48%;"></div></div>
-                                    <span class="progress-percent">48%</span>
+                                    <div class="progress-bar"><div class="progress-fill danger" data-kpi="benchmarkCacBar" style="width: 48%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkCacPercent">48%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge danger">미달</span></td>
-                            <td>비용 절감 필요</td>
+                            <td><span class="status-badge danger" data-kpi="benchmarkCacStatus">미달</span></td>
+                            <td data-kpi="benchmarkCacMeaning">비용 절감 필요</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="conversionRate">
                             <td><strong>유료 전환율</strong></td>
-                            <td>3.76%</td>
+                            <td data-kpi="benchmarkConversionValue">3.76%</td>
                             <td>1%+</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill achieved" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">228%</span>
+                                    <div class="progress-bar"><div class="progress-fill achieved" data-kpi="benchmarkConversionBar" style="width: 100%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkConversionPercent">228%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge achieved">달성</span></td>
-                            <td>Seed 수준</td>
+                            <td><span class="status-badge achieved" data-kpi="benchmarkConversionStatus">달성</span></td>
+                            <td data-kpi="benchmarkConversionMeaning">Seed 수준</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="stickiness">
                             <td><strong>Stickiness</strong></td>
-                            <td>4.1%</td>
+                            <td data-kpi="benchmarkStickinessValue">4.1%</td>
                             <td>5%+</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill warning" style="width: 76%;"></div></div>
-                                    <span class="progress-percent">76%</span>
+                                    <div class="progress-bar"><div class="progress-fill warning" data-kpi="benchmarkStickinessBar" style="width: 76%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkStickinessPercent">76%</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge warning">진행중</span></td>
-                            <td>개선 필요</td>
+                            <td><span class="status-badge warning" data-kpi="benchmarkStickinessStatus">진행중</span></td>
+                            <td data-kpi="benchmarkStickinessMeaning">개선 필요</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="d1Retention">
                             <td><strong>D1 리텐션</strong></td>
-                            <td>4.4%</td>
+                            <td data-kpi="benchmarkD1Value">4.4%</td>
                             <td>측정 시작</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill achieved" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">-</span>
+                                    <div class="progress-bar"><div class="progress-fill achieved" data-kpi="benchmarkD1Bar" style="width: 100%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkD1Percent">-</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge achieved">측정중</span></td>
-                            <td>웹 한계</td>
+                            <td><span class="status-badge achieved" data-kpi="benchmarkD1Status">측정중</span></td>
+                            <td data-kpi="benchmarkD1Meaning">웹 한계</td>
                         </tr>
-                        <tr>
+                        <tr data-benchmark="paidD1">
                             <td><strong>결제자 D1</strong></td>
-                            <td>11.6%</td>
+                            <td data-kpi="benchmarkPaidD1Value">11.6%</td>
                             <td>-</td>
                             <td>
                                 <div class="progress-container">
-                                    <div class="progress-bar"><div class="progress-fill achieved" style="width: 100%;"></div></div>
-                                    <span class="progress-percent">-</span>
+                                    <div class="progress-bar"><div class="progress-fill achieved" data-kpi="benchmarkPaidD1Bar" style="width: 100%;"></div></div>
+                                    <span class="progress-percent" data-kpi="benchmarkPaidD1Percent">-</span>
                                 </div>
                             </td>
-                            <td><span class="status-badge achieved">결제자 참여도 2.8배</span></td>
-                            <td>가치 검증</td>
+                            <td><span class="status-badge achieved" data-kpi="benchmarkPaidD1Status">결제자 참여도 2.8배</span></td>
+                            <td data-kpi="benchmarkPaidD1Meaning">가치 검증</td>
                         </tr>
                     </tbody>
                 </table>
