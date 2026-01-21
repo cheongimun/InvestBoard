@@ -38,6 +38,15 @@
         dateEl.textContent = `데이터: ${data.dataStart} ~ ${data.dataEnd} (갱신: ${now})`;
       }
 
+      // Calculate derived values
+      const freeUsers = data.mau - data.payingUsers;
+      const cacPayback = data.arppu > 0 ? data.cac / data.arppu : 0;
+
+      // Calculate cost metrics (실시간 연동)
+      const adSpend = data.adSpend || 0;
+      const aiCost = data.aiCost || 0;
+      const grossProfit = data.revenue - aiCost;
+
       // KPI value mappings for data-kpi attributes
       const kpiFormats = {
         mau: formatMan(data.mau),
@@ -55,7 +64,25 @@
         repurchaseRate: formatPercent(data.repurchaseRate),
         payingUsers: formatNum(data.payingUsers) + '명',
         arr: formatEokShort(data.arr) + '원',
-        revenue: formatEok(data.revenue) + '원'
+        revenue: formatEok(data.revenue) + '원',
+        // New freemium metrics
+        freeUsers: formatNum(freeUsers) + '명',
+        paidUsers: formatNum(data.payingUsers) + '명',
+        cacPayback: cacPayback < 2 ? '~' + Math.ceil(cacPayback) + '개월' : Math.round(cacPayback) + '개월',
+        churnRate: '측정중',
+        d7Retention: '측정필요',
+        d30Retention: '측정필요',
+        nrr: '측정필요',
+        activationRate: '측정필요',
+        // Cost metrics (실시간 연동)
+        adSpendWon: formatWon(adSpend),
+        adSpendMan: formatManWonUnit(adSpend),
+        aiCostWon: formatWon(aiCost),
+        aiCostMan: formatManWonUnit(aiCost),
+        aiCostRatio: data.revenue > 0 ? (aiCost / data.revenue * 100).toFixed(1) + '%' : '0%',
+        revenueWon: formatWon(data.revenue),
+        grossProfitWon: formatWon(grossProfit),
+        costPerQuery: data.payingUsers > 0 ? Math.round(aiCost / data.payingUsers) + '원' : '-'
       };
 
       // Update all elements with data-kpi attribute
@@ -230,8 +257,20 @@
       // Update LTV/CAC badge in header
       const ltvBadge = document.querySelector('[data-kpi="ltvCacBadge"]');
       if (ltvBadge) {
-        const status = data.ltvCac >= 3 ? '달성' : '목표: 3x 이상';
+        let status, badgeClass;
+        if (data.ltvCac >= 3) {
+          status = '달성';
+          badgeClass = 'badge-green';
+        } else if (data.ltvCac >= 2) {
+          status = '목표: 3x 이상';
+          badgeClass = 'badge-yellow';
+        } else {
+          status = 'Unit Economics 위험';
+          badgeClass = 'badge-red';
+        }
         ltvBadge.textContent = `LTV/CAC ${formatX(data.ltvCac)} (${status})`;
+        // Update badge class
+        ltvBadge.className = ltvBadge.className.replace(/badge-(green|yellow|red)/g, '').trim() + ' ' + badgeClass;
       }
 
       // Update status indicators based on thresholds
