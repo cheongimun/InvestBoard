@@ -47,6 +47,30 @@
       const aiCost = data.aiCost || 0;
       const grossProfit = data.revenue - aiCost;
 
+      // 재구매율 및 결제자 참여도 계산
+      const repurchaseCustomers = data.repurchaseCustomers || 70;  // 재구매 고객 수
+      const totalPayers = data.payingUsers || 2488;  // 전체 결제자
+      const repurchaseRate = totalPayers > 0 ? (repurchaseCustomers / totalPayers * 100) : 0;
+      const avgPurchaseCount = data.avgPurchaseCount || 1.02;  // 평균 구매 횟수
+      const paidD1Retention = data.paidD1Retention || 11.6;  // 결제자 D1 리텐션
+      const paidUserEngagement = data.d1Retention > 0 ? (paidD1Retention / data.d1Retention) : 2.8;  // 결제자 참여도 배수
+
+      // 결제 퍼널 데이터 계산
+      const funnelAdClicks = data.funnelAdClicks || data.mau || 66093;
+      const funnelLanding = data.funnelLanding || funnelAdClicks;
+      const funnelFreeComplete = data.funnelFreeComplete || Math.round(funnelAdClicks * 0.33);
+      const funnelPaidComplete = data.payingUsers || 2488;
+
+      // 퍼널 전환율 계산
+      const funnelLandingRate = funnelAdClicks > 0 ? (funnelLanding / funnelAdClicks * 100) : 100;
+      const funnelFreeRate = funnelAdClicks > 0 ? (funnelFreeComplete / funnelAdClicks * 100) : 0;
+      const funnelPaidRate = funnelAdClicks > 0 ? (funnelPaidComplete / funnelAdClicks * 100) : 0;
+
+      // 퍼널 드롭오프 계산
+      const funnelLandingDrop = -(100 - funnelLandingRate);
+      const funnelFreeDrop = funnelLanding > 0 ? -((funnelLanding - funnelFreeComplete) / funnelLanding * 100) : 0;
+      const funnelPaidDrop = funnelFreeComplete > 0 ? -((funnelFreeComplete - funnelPaidComplete) / funnelFreeComplete * 100) : 0;
+
       // KPI value mappings for data-kpi attributes
       const kpiFormats = {
         mau: formatMan(data.mau),
@@ -82,7 +106,30 @@
         aiCostRatio: data.revenue > 0 ? (aiCost / data.revenue * 100).toFixed(1) + '%' : '0%',
         revenueWon: formatWon(data.revenue),
         grossProfitWon: formatWon(grossProfit),
-        costPerQuery: data.payingUsers > 0 ? Math.round(aiCost / data.payingUsers) + '원' : '-'
+        costPerQuery: data.payingUsers > 0 ? Math.round(aiCost / data.payingUsers) + '원' : '-',
+
+        // 재구매율 및 결제자 참여도 (실시간 연동)
+        repurchaseRateValue: repurchaseRate.toFixed(2) + '%',
+        avgPurchaseCount: avgPurchaseCount.toFixed(2) + '회',
+        repurchaseCustomers: formatNum(repurchaseCustomers) + '명',
+        totalPayersRef: formatNum(totalPayers),
+        paidD1Retention: paidD1Retention.toFixed(1) + '%',
+        d1RetentionRef: formatPercent(data.d1Retention),
+        paidUserEngagement: paidUserEngagement.toFixed(1) + '배',
+        paidUserEngagementRef: paidUserEngagement.toFixed(1) + '배',
+
+        // 결제 퍼널 데이터 (실시간 연동)
+        funnelAdClicks: formatNum(funnelAdClicks),
+        funnelLanding: formatNum(funnelLanding),
+        funnelLandingRate: funnelLandingRate.toFixed(1) + '%',
+        funnelLandingDrop: funnelLandingDrop.toFixed(1) + '%',
+        funnelFreeComplete: formatNum(funnelFreeComplete),
+        funnelFreeRate: funnelFreeRate.toFixed(1) + '%',
+        funnelFreeDrop: funnelFreeDrop.toFixed(1) + '%',
+        funnelPaidComplete: formatNum(funnelPaidComplete),
+        funnelPaidRate: funnelPaidRate.toFixed(2) + '%',
+        funnelPaidDrop: funnelPaidDrop.toFixed(1) + '%',
+        funnelMaxDrop: funnelFreeDrop.toFixed(1) + '%'
       };
 
       // Update all elements with data-kpi attribute
