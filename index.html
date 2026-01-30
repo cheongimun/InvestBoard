@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>천기문 AI 사주 서비스 - Pre-seed 투자 유치 종합 대시보드</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -552,60 +552,352 @@
             </div>
         </div>
 
-        <!-- 네비게이션 -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="showTab('guide')">용어 & 목차</div>
-            <div class="nav-tab" onclick="showTab('benchmark')">투자 단계별 벤치마크</div>
-            <div class="nav-tab" onclick="showTab('comparison')">현재 지표 분석</div>
-            <div class="nav-tab" onclick="showTab('competitor')">경쟁사 비교</div>
-            <div class="nav-tab" onclick="showTab('valuation')">기업가치 추정</div>
-            <div class="nav-tab" onclick="showTab('roadmap')">투자 로드맵</div>
-            <div class="nav-tab" onclick="showTab('risk')">리스크 분석</div>
-            <div class="nav-tab" onclick="showTab('trends')">월별 추이</div>
+        <!-- 조회 기간 선택 -->
+        <div id="datePickerContainer" style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap;">
+            <span style="color: #888; font-size: 0.9rem; font-weight: 500;">📅 조회 기간</span>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="date-preset-btn" data-days="7" onclick="setDateRange(7)" style="padding: 8px 16px; background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px; color: #667eea; font-size: 0.85rem; font-weight: 500; cursor: pointer;">7일</button>
+                <button class="date-preset-btn active" data-days="30" onclick="setDateRange(30)" style="padding: 8px 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 1px solid transparent; border-radius: 8px; color: #fff; font-size: 0.85rem; font-weight: 500; cursor: pointer;">30일</button>
+                <button class="date-preset-btn" data-days="90" onclick="setDateRange(90)" style="padding: 8px 16px; background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px; color: #667eea; font-size: 0.85rem; font-weight: 500; cursor: pointer;">90일</button>
+                <button class="date-preset-btn" data-days="custom" onclick="toggleCustomDate()" style="padding: 8px 16px; background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px; color: #667eea; font-size: 0.85rem; font-weight: 500; cursor: pointer;">직접선택</button>
+            </div>
+            <div id="customDateInputs" style="display: none; align-items: center; gap: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 0.75rem; color: #888;">시작일</span>
+                    <input type="date" id="startDateInput" style="padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                </div>
+                <span style="color: #888;">~</span>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 0.75rem; color: #888;">종료일</span>
+                    <input type="date" id="endDateInput" style="padding: 8px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                </div>
+                <button onclick="applyCustomDate()" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 8px; color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer;">적용</button>
+            </div>
         </div>
 
-        <!-- 탭 1: 용어 & 목차 -->
-        <div id="guide" class="tab-content active">
+        <!-- 네비게이션 -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('overview', event)">📊 실시간 대시보드</div>
+            <div class="nav-tab" onclick="showTab('guide', event)">📚 KPI 정의 가이드</div>
+            <div class="nav-tab" onclick="showTab('benchmark', event)">투자 단계별 벤치마크</div>
+            <div class="nav-tab" onclick="showTab('comparison', event)">현재 지표 분석</div>
+            <div class="nav-tab" onclick="showTab('competitor', event)">경쟁사 비교</div>
+            <div class="nav-tab" onclick="showTab('valuation', event)">기업가치 추정</div>
+            <div class="nav-tab" onclick="showTab('roadmap', event)">투자 로드맵</div>
+            <div class="nav-tab" onclick="showTab('risk', event)">리스크 분석</div>
+            <div class="nav-tab" onclick="showTab('trends', event)">월별 추이</div>
+        </div>
+
+        <!-- 새로운 첫 탭: 실시간 투자자용 대시보드 -->
+        <div id="overview" class="tab-content active">
+            <!-- Executive Summary Hero -->
+            <div class="section" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%); border: 1px solid rgba(102, 126, 234, 0.3);">
+                <div class="section-title">📊 투자자용 실시간 KPI 대시보드</div>
+                <p style="color: #888; margin-bottom: 20px;">KPI 정의서 v3.0 기준 | Consumer Transactional 벤치마크 (Lenny Rachitsky)</p>
+
+                <!-- Hero KPIs Row -->
+                <div class="four-col">
+                    <div class="kpi-card highlight">
+                        <div class="label">Total MAU</div>
+                        <div class="value" data-kpi="mau">-</div>
+                        <div class="sub blue">전체 활성 사용자</div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="label">MRR</div>
+                        <div class="value" data-kpi="mrr">-</div>
+                        <div class="sub green">월간 반복 매출</div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="label">LTV:CAC</div>
+                        <div class="value" data-kpi="ltvCac">-</div>
+                        <div class="sub" id="ltvcac-status" style="color: #ef4444;">목표: 3x (Series A)</div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="label">Gross Margin</div>
+                        <div class="value" data-kpi="grossMargin">-</div>
+                        <div class="sub green">수익성</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAU Hierarchy Section -->
+            <div class="section">
+                <div class="section-title">👥 MAU 계층 구조 (KPI 정의서 섹션 2)</div>
+                <p style="color: #888; margin-bottom: 20px;">투자자는 Total MAU와 Paying MAU를 구분해서 봅니다</p>
+
+                <div class="three-col">
+                    <div class="kpi-card" style="border-left: 4px solid #667eea;">
+                        <div class="label">Total MAU</div>
+                        <div class="value" data-kpi="totalMau">-</div>
+                        <div class="sub blue">무료+유료 활성 사용자</div>
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">시장 도달 범위</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 4px solid #10b981;">
+                        <div class="label">Paying MAU ⭐</div>
+                        <div class="value" data-kpi="payingMau">-</div>
+                        <div class="sub green">유료 활성 사용자</div>
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">수익 기반 (Primary)</div>
+                    </div>
+                    <div class="kpi-card" style="border-left: 4px solid #888;">
+                        <div class="label">Free-only MAU</div>
+                        <div class="value" data-kpi="freeOnlyMau">-</div>
+                        <div class="sub">무료만 사용</div>
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">전환 대상</div>
+                    </div>
+                </div>
+
+                <!-- Paying Ratio Bar -->
+                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="color: #888;">Paying Ratio (유료화율)</span>
+                        <span style="font-weight: 700;" data-kpi="payingRatioShort">-</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill achieved" id="payingRatioProgress" style="width: 0%;"></div>
+                    </div>
+                    <div style="margin-top: 8px; font-size: 0.8rem; color: #888;">벤치마크: 3-5% 평균, 8%+ 우수 (Paddle)</div>
+                </div>
+            </div>
+
+            <!-- Transaction Retention Section - PRIMARY INVESTOR METRIC -->
+            <div class="section" style="border: 2px solid rgba(16, 185, 129, 0.3);">
+                <div class="section-title">💰 거래 리텐션 (Transaction Retention) - 투자자 Primary 지표</div>
+                <p style="color: #888; margin-bottom: 5px;">KPI 정의서 섹션 3.3.2 | 유료 사용자의 월간 재결제 비율</p>
+                <p style="color: #10b981; font-size: 0.85rem; margin-bottom: 20px;">⭐ 방문 리텐션보다 중요: 실제 수익 지속성을 보여줍니다</p>
+
+                <div class="three-col">
+                    <div class="kpi-card">
+                        <div class="label">M1 거래 리텐션</div>
+                        <div class="value" data-kpi="m1Retention">-</div>
+                        <div class="sub">첫 결제 후 1개월</div>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Good: 20-30%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">M3 거래 리텐션</div>
+                        <div class="value" data-kpi="m3Retention">-</div>
+                        <div class="sub">첫 결제 후 3개월</div>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Good: 15-25%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">M6 거래 리텐션</div>
+                        <div class="value" data-kpi="m6Retention">-</div>
+                        <div class="sub">첫 결제 후 6개월</div>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.1); color: #10b981;">Good: 10-20%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box success" style="margin-top: 20px;">
+                    <h5>투자자 기대 사항</h5>
+                    <p>거래 리텐션은 방문 리텐션보다 30-50% 높아야 합니다. 재결제는 진정한 가치 증명입니다.</p>
+                </div>
+            </div>
+
+            <!-- Visit Retention Section -->
+            <div class="section">
+                <div class="section-title">📈 방문 리텐션 (Visit Retention) - PMF 보조 지표</div>
+                <p style="color: #888; margin-bottom: 20px;">KPI 정의서 섹션 3.3.1 | 전체 사용자의 핵심 행동 재수행 비율</p>
+
+                <div class="three-col">
+                    <div class="kpi-card">
+                        <div class="label">D1 방문 리텐션</div>
+                        <div class="value" data-kpi="d1Retention">-</div>
+                        <div class="sub">첫날 다음날 재방문</div>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background: rgba(102, 126, 234, 0.1); color: #667eea;">Good: 25-35%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">D7 방문 리텐션</div>
+                        <div class="value" data-kpi="d7Retention">-</div>
+                        <div class="sub">7일 후 재방문</div>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background: rgba(102, 126, 234, 0.1); color: #667eea;">Good: 10-15%</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">D30 방문 리텐션</div>
+                        <div class="value" data-kpi="d30Retention">-</div>
+                        <div class="sub">30일 후 재방문</div>
+                        <div style="margin-top: 8px;">
+                            <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background: rgba(102, 126, 234, 0.1); color: #667eea;">Good: 6-10%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px; padding: 12px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; font-size: 0.85rem;">
+                    <strong style="color: #f59e0b;">참고:</strong> Consumer Transactional 앱 기준입니다. a16z 60/30/15 기준은 일일 사용 앱 기준이므로 참고용으로만 활용하세요.
+                </div>
+            </div>
+
+            <!-- Unit Economics Section -->
+            <div class="section">
+                <div class="section-title">💵 Unit Economics (유닛 이코노믹스)</div>
+                <p style="color: #888; margin-bottom: 20px;">KPI 정의서 섹션 6-8 | 고객당 수익성 분석</p>
+
+                <div class="four-col">
+                    <div class="kpi-card">
+                        <div class="label">ARPPU</div>
+                        <div class="value" data-kpi="arppu">-</div>
+                        <div class="sub green">유료 유저당 매출</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">LTV</div>
+                        <div class="value" data-kpi="ltv">-</div>
+                        <div class="sub blue">고객 생애 가치</div>
+                        <div style="margin-top: 5px; font-size: 0.7rem; color: #888;">= ARPPU × 고객수명 × GM</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">CAC (Working)</div>
+                        <div class="value" data-kpi="cac">-</div>
+                        <div class="sub yellow">고객 획득 비용</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">Fully Loaded CAC</div>
+                        <div class="value" data-kpi="fullyLoadedCac">-</div>
+                        <div class="sub" style="color: #ef4444;">투자자 보고용</div>
+                    </div>
+                </div>
+
+                <div class="two-col" style="margin-top: 20px;">
+                    <div class="kpi-card highlight">
+                        <div class="label">Customer Lifespan</div>
+                        <div class="value" data-kpi="customerLifespan">-</div>
+                        <div class="sub blue">평균 고객 수명</div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="label">CAC Payback Period</div>
+                        <div class="value" data-kpi="cacPaybackMonths">-</div>
+                        <div class="sub">CAC 회수 기간</div>
+                        <div style="margin-top: 5px; font-size: 0.7rem; color: #888;">Consumer 앱 목표: 12개월 이내</div>
+                    </div>
+                </div>
+
+                <!-- LTV:CAC Status Card -->
+                <div style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border-radius: 16px; border: 1px solid rgba(102, 126, 234, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <div style="color: #888; font-size: 0.9rem; margin-bottom: 5px;">LTV:CAC Ratio</div>
+                            <div style="font-size: 2rem; font-weight: 700;" data-kpi="ltvCac">-</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.85rem; color: #888;">펀딩 단계별 기준</div>
+                            <div style="margin-top: 5px;">
+                                <span style="padding: 4px 8px; border-radius: 4px; background: rgba(245, 158, 11, 0.2); color: #f59e0b; font-size: 0.8rem; margin-right: 5px;">Pre-seed: 1.5x</span>
+                                <span style="padding: 4px 8px; border-radius: 4px; background: rgba(59, 130, 246, 0.2); color: #3b82f6; font-size: 0.8rem; margin-right: 5px;">Seed: 2x</span>
+                                <span style="padding: 4px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.2); color: #10b981; font-size: 0.8rem;">Series A: 3x</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Churn & Repurchase Section -->
+            <div class="section">
+                <div class="section-title">🔄 이탈 & 재구매 분석</div>
+                <p style="color: #888; margin-bottom: 20px;">KPI 정의서 섹션 4, 6.3 | 고객 유지 및 충성도</p>
+
+                <div class="four-col">
+                    <div class="kpi-card">
+                        <div class="label">90일 Churn Rate</div>
+                        <div class="value" data-kpi="churnRate90d">-</div>
+                        <div class="sub" style="color: #ef4444;">90일 내 미재결제</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">월간 Churn Rate</div>
+                        <div class="value" data-kpi="monthlyChurnRate">-</div>
+                        <div class="sub yellow">LTV 계산 기반</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">재구매율</div>
+                        <div class="value" data-kpi="repurchaseRate">-</div>
+                        <div class="sub green">2회 이상 결제 비율</div>
+                        <div style="margin-top: 5px; font-size: 0.7rem; color: #888;">Good: 20-40%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="label">Stickiness (DAU/MAU)</div>
+                        <div class="value" data-kpi="stickiness">-</div>
+                        <div class="sub blue">일일 참여도</div>
+                        <div style="margin-top: 5px; font-size: 0.7rem; color: #888;">Transactional: 20%+ Good</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Navigation -->
+            <div class="section" style="background: rgba(255,255,255,0.02);">
+                <div class="section-title">🧭 빠른 이동</div>
+                <div class="four-col">
+                    <div class="kpi-card" style="cursor: pointer;" onclick="showTab('guide', event)">
+                        <div class="label">📚</div>
+                        <div class="value" style="font-size: 1rem;">KPI 정의 가이드</div>
+                        <div class="sub blue">용어 및 계산 방법</div>
+                    </div>
+                    <div class="kpi-card" style="cursor: pointer;" onclick="showTab('benchmark', event)">
+                        <div class="label">📊</div>
+                        <div class="value" style="font-size: 1rem;">벤치마크 비교</div>
+                        <div class="sub green">투자 단계별 기준</div>
+                    </div>
+                    <div class="kpi-card" style="cursor: pointer;" onclick="showTab('comparison', event)">
+                        <div class="label">📈</div>
+                        <div class="value" style="font-size: 1rem;">현재 지표 분석</div>
+                        <div class="sub yellow">달성률 상세</div>
+                    </div>
+                    <div class="kpi-card" style="cursor: pointer;" onclick="showTab('trends', event)">
+                        <div class="label">📉</div>
+                        <div class="value" style="font-size: 1rem;">월별 추이</div>
+                        <div class="sub">성장 트렌드</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 탭 2: KPI 정의 가이드 (기존 용어 & 목차) -->
+        <div id="guide" class="tab-content">
             <!-- 목차 -->
             <div class="section">
                 <div class="section-title">대시보드 목차</div>
                 <div class="toc">
-                    <div class="toc-item" onclick="showTab('benchmark')">
+                    <div class="toc-item" onclick="showTab('benchmark', event)">
                         <div class="toc-num">1</div>
                         <div class="toc-text">
                             <div class="title">투자 단계별 벤치마크</div>
                             <div class="desc">Pre-seed부터 Series A까지 각 단계별 필요 지표와 투자 규모</div>
                         </div>
                     </div>
-                    <div class="toc-item" onclick="showTab('comparison')">
+                    <div class="toc-item" onclick="showTab('comparison', event)">
                         <div class="toc-num">2</div>
                         <div class="toc-text">
                             <div class="title">현재 지표 분석</div>
                             <div class="desc">천기문의 현재 KPI와 Pre-seed 벤치마크 대비 달성률</div>
                         </div>
                     </div>
-                    <div class="toc-item" onclick="showTab('competitor')">
+                    <div class="toc-item" onclick="showTab('competitor', event)">
                         <div class="toc-num">3</div>
                         <div class="toc-text">
                             <div class="title">경쟁사 비교 분석</div>
                             <div class="desc">점신, 포스텔러, 사주나루의 투자 당시 지표와 현재 성과</div>
                         </div>
                     </div>
-                    <div class="toc-item" onclick="showTab('valuation')">
+                    <div class="toc-item" onclick="showTab('valuation', event)">
                         <div class="toc-num">4</div>
                         <div class="toc-text">
                             <div class="title">기업가치 추정</div>
                             <div class="desc">시나리오별 기업가치 및 예상 투자 유치 금액</div>
                         </div>
                     </div>
-                    <div class="toc-item" onclick="showTab('roadmap')">
+                    <div class="toc-item" onclick="showTab('roadmap', event)">
                         <div class="toc-num">5</div>
                         <div class="toc-text">
                             <div class="title">투자 로드맵</div>
                             <div class="desc">Pre-seed에서 Series A까지 마일스톤 및 액션 플랜</div>
                         </div>
                     </div>
-                    <div class="toc-item" onclick="showTab('risk')">
+                    <div class="toc-item" onclick="showTab('risk', event)">
                         <div class="toc-num">6</div>
                         <div class="toc-text">
                             <div class="title">리스크 분석</div>
@@ -937,7 +1229,7 @@
                             <div class="accordion-header" onclick="toggleAccordion(this)">
                                 <div>
                                     <span class="term-title">LTV/CAC Ratio</span>
-                                    <span class="term-summary"><span class="status-dot danger"></span> <span data-kpi="ltvCac"><span data-kpi="ltvCacX"><span data-kpi="ltvCacX">1.72x</span> | Unit Economics 위험</span>
+                                    <span class="term-summary"><span class="status-dot danger"></span> <span data-kpi="ltvCac">1.72x</span> | Unit Economics 위험</span>
                                 </div>
                                 <span class="toggle-icon">▼</span>
                             </div>
@@ -975,7 +1267,7 @@
                             </div>
                             <div class="accordion-content">
                                 <div class="definition">광고에 투자한 비용 대비 발생한 매출의 비율. 광고 효율성을 측정</div>
-                                <div class="formula">ROAS = 매출 / 광고비 = 108,094,700 / 62,896,085 = 1.72x</div>
+                                <div class="formula" data-kpi="roasFormula">ROAS = 매출 / 광고비 = 108,094,700 / 62,896,085 = 1.72x</div>
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>ROAS</th><th>상태</th><th>의미</th><th>액션</th></tr></thead>
                                     <tbody>
@@ -1023,7 +1315,7 @@
                                 <table style="margin-top: 15px; font-size: 0.85rem;">
                                     <thead><tr><th>Stickiness</th><th>방문 빈도</th><th>서비스 유형</th><th>투자 매력도</th></tr></thead>
                                     <tbody>
-                                        <tr style="background: rgba(239, 68, 68, 0.1);"><td><strong>5% 미만</strong></td><td>월 1~2회</td><td>일회성 서비스</td><td><strong>천기문: <span data-kpi="stickiness">4.1%</span></strong></td></tr>
+                                        <tr style="background: rgba(239, 68, 68, 0.1);"><td><strong>5% 미만</strong></td><td>월 1~2회</td><td>일회성 서비스</td><td><strong>천기문: <span data-kpi="stickinessRef">4.1%</span></strong></td></tr>
                                         <tr><td>5% ~ 10%</td><td>주 1회</td><td>주간 서비스</td><td>보통</td></tr>
                                         <tr><td>10% ~ 20%</td><td>주 2~3회</td><td>습관형 서비스</td><td>양호</td></tr>
                                         <tr style="background: rgba(16, 185, 129, 0.1);"><td>20% 이상</td><td>거의 매일</td><td>습관화됨</td><td>높음 (목표)</td></tr>
@@ -1061,13 +1353,13 @@
                                             <td>결제자 리텐션</td>
                                             <td>결제 유저의 D1 리텐션</td>
                                             <td style="background: rgba(16, 185, 129, 0.1);">비결제자의 2x+</td>
-                                            <td style="background: rgba(16, 185, 129, 0.1);"><strong>11.6% (2.8배)</strong></td>
+                                            <td style="background: rgba(16, 185, 129, 0.1);"><strong><span data-kpi="paidD1RetentionRef2">11.6%</span> (<span data-kpi="paidUserEngagementRef2">2.8배</span>)</strong></td>
                                         </tr>
                                         <tr>
                                             <td>유료 전환율</td>
                                             <td>MAU 중 결제 비율</td>
                                             <td style="background: rgba(16, 185, 129, 0.1);">2~5%</td>
-                                            <td style="background: rgba(16, 185, 129, 0.1);"><strong data-kpi="conversionRatePct">3.76%</strong></td>
+                                            <td style="background: rgba(16, 185, 129, 0.1);"><strong data-kpi="conversionRateRef2">3.76%</strong></td>
                                         </tr>
                                         <tr>
                                             <td>NPS</td>
@@ -1078,7 +1370,7 @@
                                     </tbody>
                                 </table>
                                 <div style="margin-top: 10px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; font-size: 0.85rem;">
-                                    <strong style="color: #10b981;">천기문 PMF 신호:</strong> 결제자 D1이 비결제자의 2.8배 → 제품 가치를 느낀 유저는 재방문
+                                    <strong style="color: #10b981;">천기문 PMF 신호:</strong> 결제자 D1이 비결제자의 <span data-kpi="paidUserEngagementRef3">2.8배</span> → 제품 가치를 느낀 유저는 재방문
                                 </div>
                             </div>
                         </div>
@@ -1297,9 +1589,19 @@
                 </div>
             </div>
 
+            <!-- Consumer Transactional 벤치마크 안내 -->
+            <div class="insight-box" style="margin-bottom: 20px;">
+                <h5 style="color: #667eea;">📊 벤치마크 기준 안내 (KPI 정의서 v3.0)</h5>
+                <p style="margin-bottom: 10px;">운세/사주 앱은 <strong>Consumer Transactional</strong> 카테고리로 분류됩니다.</p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+                    <span style="padding: 4px 10px; border-radius: 6px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 0.85rem;">✓ Lenny Rachitsky 기준 적용</span>
+                    <span style="padding: 4px 10px; border-radius: 6px; background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-size: 0.85rem;">⚠ a16z 60/30/15는 참고용</span>
+                </div>
+            </div>
+
             <!-- 단계별 상세 벤치마크 -->
             <div class="section">
-                <div class="section-title">단계별 핵심 지표 상세 (글로벌 + 한국 혼합 벤치마크 기준)</div>
+                <div class="section-title">단계별 핵심 지표 상세 (Consumer Transactional 기준)</div>
                 <table>
                     <thead>
                         <tr>
@@ -1385,7 +1687,7 @@
                 <h5>천기문의 Pre-seed 단계 적합성 분석 (투자자 관점)</h5>
                 <p>
                     <strong style="color: #10b981;">달성 지표:</strong> MAU (<span data-kpi="mau">6.6만</span>, Seed 수준), MRR (<span data-kpi="mrr">1.08억</span>, Seed 초과), ARPPU (<span data-kpi="arppu">35,924원</span>), Gross Margin (<span data-kpi="grossMargin">85.7%</span>)<br>
-                    <strong style="color: #f59e0b;">개선 필요:</strong> CAC (<span data-kpi="cac">20,903원</span>, 높음), LTV/CAC (<span data-kpi="ltvCac"><span data-kpi="ltvCacX"><span data-kpi="ltvCacX">1.72x</span>, 목표 3x 미달), D1 리텐션 (<span data-kpi="d1Retention">4.55%</span>, 목표 20% 미달), Stickiness (<span data-kpi="stickiness">3.83%</span>)<br><br>
+                    <strong style="color: #f59e0b;">개선 필요:</strong> CAC (<span data-kpi="cac">20,903원</span>, 높음), LTV/CAC (<span data-kpi="ltvCac">1.72x</span>, 목표 3x 미달), D1 리텐션 (<span data-kpi="d1Retention">4.55%</span>, 목표 20% 미달), Stickiness (<span data-kpi="stickiness">3.83%</span>)<br><br>
                     <strong style="color: #667eea;">투자자 관점 결론:</strong> 매출 규모는 Seed 수준 초과 달성으로 긍정적. 그러나 CAC가 높아 LTV/CAC 1.72x로 3x 목표 미달. 마케팅 효율 개선 및 리텐션 향상이 Seed 라운드 진입의 핵심 과제.
                 </p>
             </div>
@@ -1582,7 +1884,7 @@
                     <tbody>
                         <tr data-benchmark="mau">
                             <td><strong>MAU</strong></td>
-                            <td data-kpi="benchmarkMauValue">66,099명</td>
+                            <td><span data-kpi="mauValuation">66,099명</span></td>
                             <td>10,000 ~ 50,000</td>
                             <td>
                                 <div class="progress-container">
@@ -1785,8 +2087,8 @@
                 <div class="insight-box success" style="margin-top: 15px;">
                     <h5>VC 어필 포인트</h5>
                     <p>
-                        <strong>75.7% Gross Margin</strong>은 SaaS 수준의 고마진 구조입니다.<br>
-                        AI 비용이 매출의 11%에 불과하여, 매출 증가 시 대부분이 순이익으로 전환됩니다.
+                        <strong><span data-kpi="grossMargin">75.7%</span> Gross Margin</strong>은 SaaS 수준의 고마진 구조입니다.<br>
+                        AI 비용이 매출의 <span data-kpi="aiCostRatio">11%</span>에 불과하여, 매출 증가 시 대부분이 순이익으로 전환됩니다.
                     </p>
                 </div>
             </div>
@@ -1844,10 +2146,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>2025-12</strong></td>
-                            <td>66,099명</td>
-                            <td style="background: rgba(16, 185, 129, 0.3);">100%</td>
-                            <td style="background: rgba(16, 185, 129, 0.2);">12.5%</td>
+                            <td><strong data-kpi="cohort1Month">2025-12</strong></td>
+                            <td data-kpi="cohort1Users">66,099명</td>
+                            <td style="background: rgba(16, 185, 129, 0.3);" data-kpi="cohort1M0">100%</td>
+                            <td style="background: rgba(16, 185, 129, 0.2);" data-kpi="cohort1M1">12.5%</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -1855,10 +2157,10 @@
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td><strong>2026-01</strong></td>
-                            <td>66,099명</td>
-                            <td style="background: rgba(16, 185, 129, 0.3);">100%</td>
-                            <td>진행중</td>
+                            <td><strong data-kpi="cohort2Month">2026-01</strong></td>
+                            <td data-kpi="cohort2Users">66,099명</td>
+                            <td style="background: rgba(16, 185, 129, 0.3);" data-kpi="cohort2M0">100%</td>
+                            <td data-kpi="cohort2M1">진행중</td>
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
@@ -2009,7 +2311,7 @@
                     <h5 style="font-size: 1.1rem;">Pre-seed 투자 적합성 평가</h5>
                     <p>
                         <strong style="color: #10b981;">Seed 수준 달성:</strong> MAU (<span data-kpi="mau">6.6만</span>), MRR (<span data-kpi="mrr">1.08억</span>), ARPPU (<span data-kpi="arppu">35,924원</span>), Gross Margin (<span data-kpi="grossMargin">85.7%</span>), 전환율 (<span data-kpi="conversionRate">4.55%</span>)<br><br>
-                        <strong style="color: #f59e0b;">개선 필요:</strong> CAC (<span data-kpi="cac">20,903원</span>)가 높아 LTV/CAC (<span data-kpi="ltvCac"><span data-kpi="ltvCacX"><span data-kpi="ltvCacX">1.72x</span>)가 3x 목표 미달. D1 리텐션 (<span data-kpi="d1Retention">4.55%</span>), Stickiness (<span data-kpi="stickiness">3.83%</span>) 개선 필요<br><br>
+                        <strong style="color: #f59e0b;">개선 필요:</strong> CAC (<span data-kpi="cac">20,903원</span>)가 높아 LTV/CAC (<span data-kpi="ltvCac">1.72x</span>)가 3x 목표 미달. D1 리텐션 (<span data-kpi="d1Retention">4.55%</span>), Stickiness (<span data-kpi="stickiness">3.83%</span>) 개선 필요<br><br>
                         <strong style="color: #667eea;">투자자 관점 결론:</strong> 매출 규모와 수익성은 Pre-seed 수준 초과. 그러나 CAC 절감을 통한 LTV/CAC 개선과 리텐션 향상이 Seed 라운드 진입의 선결 조건. 웹→앱 전환 시 리텐션 개선 가능성 존재.
                     </p>
                 </div>
@@ -2155,7 +2457,7 @@
                         <tr>
                             <td><strong>MAU</strong></td>
                             <td>30만~50만 (추정)</td>
-                            <td>6.6만명</td>
+                            <td><span data-kpi="mau">6.6만명</span></td>
                             <td style="color: #f59e0b;">17~30%</td>
                         </tr>
                         <tr>
@@ -2199,9 +2501,9 @@
             <div class="insight-box">
                 <h5>경쟁사 분석 인사이트</h5>
                 <p>
-                    <strong>1. ARPPU 프리미엄:</strong> 천기문의 34,820원은 점신(~4,000원), 포스텔러(~6,000원) 대비 5~8배 높음. AI 기반 고품질 서비스의 가치 증명<br><br>
+                    <strong>1. ARPPU 프리미엄:</strong> 천기문의 <span data-kpi="arppu">34,820원</span>은 점신(~4,000원), 포스텔러(~6,000원) 대비 5~8배 높음. AI 기반 고품질 서비스의 가치 증명<br><br>
                     <strong>2. 효율성:</strong> 포스텔러의 Series A 당시 MAU 대비 천기문은 17% 수준이나, ARPPU는 5.9배 → <strong>유저당 가치가 훨씬 높음</strong><br><br>
-                    <strong>3. 성장 속도:</strong> 천기문은 런칭 2개월 만에 월 8,663만원 매출 달성. 포스텔러가 Series A까지 2년 소요된 것 대비 빠른 트랙션
+                    <strong>3. 성장 속도:</strong> 천기문은 런칭 2개월 만에 월 <span data-kpi="mrr">8,663만원</span> 매출 달성. 포스텔러가 Series A까지 2년 소요된 것 대비 빠른 트랙션
                 </p>
             </div>
         </div>
@@ -2215,7 +2517,7 @@
                     <div style="text-align: center; padding: 25px; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
                         <div style="color: #888; margin-bottom: 8px; font-size: 0.9rem;">예상 기업가치 (추천)</div>
                         <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">80억 ~ 120억원</div>
-                        <div style="color: #10b981; font-size: 0.85rem; margin-top: 8px;">ARR 10.4억 x 5~8x 멀티플 (일반 SaaS 기준)</div>
+                        <div style="color: #10b981; font-size: 0.85rem; margin-top: 8px;">ARR <span data-kpi="arr">10.4억</span> x 5~8x 멀티플 (일반 SaaS 기준)</div>
                     </div>
                     <div style="text-align: center; padding: 25px; background: rgba(102, 126, 234, 0.1); border-radius: 12px;">
                         <div style="color: #888; margin-bottom: 8px; font-size: 0.9rem;">예상 투자 유치</div>
@@ -2224,7 +2526,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 15px; padding: 12px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; font-size: 0.85rem;">
-                    <strong style="color: #f59e0b;">ARR Multiple 참고:</strong> 표시된 5x-8x는 일반 SaaS 기준입니다. 현재 밸류 30-50억 제안 시 ARR 10.4억 대비 28x-48x에 해당합니다. AI 스타트업 프리미엄 적용 시 정당화 가능하나, <strong>LTV/CAC 개선이 선행되어야</strong> 높은 멀티플을 정당화할 수 있습니다.
+                    <strong style="color: #f59e0b;">ARR Multiple 참고:</strong> 표시된 5x-8x는 일반 SaaS 기준입니다. 현재 밸류 30-50억 제안 시 ARR <span data-kpi="arr">10.4억</span> 대비 28x-48x에 해당합니다. AI 스타트업 프리미엄 적용 시 정당화 가능하나, <strong>LTV/CAC 개선이 선행되어야</strong> 높은 멀티플을 정당화할 수 있습니다.
                 </div>
                 <div class="kpi-summary-grid" style="grid-template-columns: repeat(4, 1fr);">
                     <div class="kpi-mini-card">
@@ -2330,7 +2632,7 @@
                         <table>
                             <tr>
                                 <td>현재 MAU</td>
-                                <td>66,099명</td>
+                                <td data-kpi="mauValuation">66,099명</td>
                             </tr>
                             <tr>
                                 <td>한국 Pre-seed MAU 멀티플</td>
@@ -2371,11 +2673,11 @@
                             </tr>
                             <tr>
                                 <td>월 결제 유저</td>
-                                <td>2,488명</td>
+                                <td data-kpi="payingUsers">2,488명</td>
                             </tr>
                             <tr>
                                 <td>예상 연간 신규 결제 유저</td>
-                                <td>66,099명</td>
+                                <td data-kpi="mauValuation">66,099명</td>
                             </tr>
                             <tr>
                                 <td>연간 LTV 합계</td>
@@ -2417,7 +2719,7 @@
                     <h5 style="font-size: 1.1rem;">투자 유치 가능성: 높음</h5>
                     <p>
                         <strong style="color: #10b981;">달성:</strong> MAU, MRR, ARPPU, Gross Margin이 Pre-seed 기준 초과. 2개월 만에 월 <span data-kpi="mrr">1.08억</span> 매출 달성<br><br>
-                        <strong style="color: #f59e0b;">과제:</strong> CAC (<span data-kpi="cac">20,903원</span>) 절감 및 LTV/CAC (<span data-kpi="ltvCac"><span data-kpi="ltvCacX"><span data-kpi="ltvCacX">1.72x</span>) 3x 달성, 리텐션 개선 필요<br><br>
+                        <strong style="color: #f59e0b;">과제:</strong> CAC (<span data-kpi="cac">20,903원</span>) 절감 및 LTV/CAC (<span data-kpi="ltvCac">1.72x</span>) 3x 달성, 리텐션 개선 필요<br><br>
                         <strong style="color: #f59e0b;">개선 포인트:</strong> 앱 출시 후 리텐션 개선 시 Seed/Pre-A 진입 → 더 높은 밸류에이션 기대
                     </p>
                 </div>
@@ -2463,11 +2765,11 @@
                     <div class="roadmap-item current">
                         <div class="stage">현재 단계</div>
                         <div class="title">Pre-seed (3억~5억원 목표)</div>
-                        <div class="desc">AI 사주 서비스 MVP 검증 완료. 월 8,663만원 매출 달성. ROAS 1.42x로 수익성 입증</div>
+                        <div class="desc">AI 사주 서비스 MVP 검증 완료. 월 <span data-kpi="mrr">8,663만원</span> 매출 달성. ROAS <span data-kpi="roas">1.42x</span>로 수익성 입증</div>
                         <div class="metrics">
-                            <span class="metric-tag">MAU 6.6만</span>
-                            <span class="metric-tag">MRR 8,663만원</span>
-                            <span class="metric-tag">ROAS 1.42x</span>
+                            <span class="metric-tag">MAU <span data-kpi="mau">6.6만</span></span>
+                            <span class="metric-tag">MRR <span data-kpi="mrrMan">8,663만원</span></span>
+                            <span class="metric-tag">ROAS <span data-kpi="roas">1.42x</span></span>
                         </div>
                     </div>
 
@@ -2560,7 +2862,7 @@
                         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                             <div style="background: rgba(102, 126, 234, 0.15); padding: 8px 15px; border-radius: 6px; border-left: 3px solid #667eea;">
                                 <span style="color: #667eea; font-weight: 600;">Pre-seed</span>
-                                <span style="color: #888; font-size: 0.85rem;"> 현재 | MAU 6.6만 | MRR 0.88억</span>
+                                <span style="color: #888; font-size: 0.85rem;"> 현재 | MAU <span data-kpi="mau">6.6만</span> | MRR <span data-kpi="mrr">0.88억</span></span>
                             </div>
                             <div style="background: rgba(16, 185, 129, 0.15); padding: 8px 15px; border-radius: 6px; border-left: 3px solid #10b981;">
                                 <span style="color: #10b981; font-weight: 600;">Seed</span>
@@ -2610,7 +2912,7 @@
                     <div class="kpi-mini-card" style="border-color: rgba(245, 158, 11, 0.5);">
                         <div class="kpi-name"><span class="status-dot warning"></span>LTV/CAC</div>
                         <div class="kpi-value" style="color: #f59e0b; font-size: 1rem;">MED</div>
-                        <div class="status-text warning"><span data-kpi="ltvCac"><span data-kpi="ltvCacX"><span data-kpi="ltvCacX">1.72x</span> (3x 목표)</div>
+                        <div class="status-text warning"><span data-kpi="ltvCac">1.72x</span> (3x 목표)</div>
                     </div>
                     <div class="kpi-mini-card" style="border-color: rgba(16, 185, 129, 0.5);">
                         <div class="kpi-name"><span class="status-dot good"></span>시장</div>
@@ -2845,7 +3147,7 @@
                         <h4 style="color: #ef4444; margin-bottom: 15px;">Seed 진입 전 개선 필요 (Risks)</h4>
                         <ul style="color: #ccc; line-height: 2; padding-left: 20px;">
                             <li><strong>CAC <span data-kpi="cac">20,903원</span></strong> - 비용 절감 필요</li>
-                            <li><strong>LTV/CAC <span data-kpi="ltvCac"><span data-kpi="ltvCacX"><span data-kpi="ltvCacX">1.72x</span></strong> - 3x 목표 미달</li>
+                            <li><strong>LTV/CAC <span data-kpi="ltvCac">1.72x</span></strong> - 3x 목표 미달</li>
                             <li><strong>D1 리텐션 <span data-kpi="d1Retention">4.55%</span></strong> - 20% 목표 미달</li>
                             <li><strong>Stickiness <span data-kpi="stickiness">3.83%</span></strong> - 재방문 유도 필요</li>
                         </ul>
@@ -3028,12 +3330,18 @@
     </style>
 
     <script>
-        // 탭 전환
-        function showTab(tabId) {
+        // 탭 전환 - event를 명시적으로 전달받도록 수정
+        function showTab(tabId, evt) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            const tabEl = document.getElementById(tabId);
+            if (tabEl) tabEl.classList.add('active');
+            // evt가 전달된 경우에만 target 클래스 추가
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            } else if (evt && evt.target) {
+                evt.target.classList.add('active');
+            }
         }
 
         // 아코디언 토글 함수
@@ -3097,9 +3405,12 @@
         Chart.defaults.color = '#888';
         Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
 
+        // 전역 차트 저장소 초기화
+        window.dashboardCharts = window.dashboardCharts || {};
+
         // 벤치마크 레이더 차트
         const benchmarkCtx = document.getElementById('benchmarkChart').getContext('2d');
-        new Chart(benchmarkCtx, {
+        window.dashboardCharts.benchmark = new Chart(benchmarkCtx, {
             type: 'radar',
             data: {
                 labels: ['MAU', 'MRR', 'ARPPU', 'LTV/CAC', 'CAC', '유료전환율', 'Stickiness'],
@@ -3136,7 +3447,7 @@
 
         // 단계별 위치 차트
         const stageCtx = document.getElementById('stageChart').getContext('2d');
-        new Chart(stageCtx, {
+        window.dashboardCharts.stage = new Chart(stageCtx, {
             type: 'bar',
             data: {
                 labels: ['MAU', 'MRR', 'LTV/CAC', 'ARPPU'],
@@ -3170,7 +3481,7 @@
 
         // ARPPU 비교 차트
         const arppuCtx = document.getElementById('arppuChart').getContext('2d');
-        new Chart(arppuCtx, {
+        window.dashboardCharts.arppu = new Chart(arppuCtx, {
             type: 'bar',
             data: {
                 labels: ['천기문', '포스텔러', '점신'],
@@ -3216,7 +3527,7 @@
 
         // 성장 곡선 차트
         const growthCtx = document.getElementById('growthChart').getContext('2d');
-        new Chart(growthCtx, {
+        window.dashboardCharts.growth = new Chart(growthCtx, {
             type: 'line',
             data: {
                 labels: ['현재', '3개월', '6개월', '9개월', '12개월', '18개월'],
@@ -3260,8 +3571,255 @@
             }
         });
 
+        // Chart update function for realtime data - with error handling
+        window.updateChartsWithData = function(data) {
+            try {
+                console.log('[Charts] Updating charts with data:', data);
+
+                // Validate data object exists and has required fields
+                if (!data || typeof data !== 'object') {
+                    console.warn('[Charts] Invalid data object received');
+                    return;
+                }
+
+                // Safe number extraction with fallbacks
+                const safeNum = (val, fallback = 0) => {
+                    const num = Number(val);
+                    return isNaN(num) || !isFinite(num) ? fallback : num;
+                };
+
+                // Update benchmark radar chart - calculate achievement percentages dynamically
+                if (window.dashboardCharts.benchmark) {
+                    const mau = safeNum(data.mau);
+                    const revenue = safeNum(data.revenue);
+                    const arppu = safeNum(data.arppu);
+                    const ltvCac = safeNum(data.ltvCac);
+                    const cac = safeNum(data.cac, 1); // Avoid division by zero
+                    const conversionRate = safeNum(data.conversionRate);
+                    const stickiness = safeNum(data.stickiness);
+
+                    const mauPercent = Math.round(mau / 50000 * 100);
+                    const mrrPercent = Math.round(revenue / 10000000 * 100);
+                    const arppuPercent = Math.round(arppu / 20000 * 100);
+                    const ltvCacPercent = Math.round(ltvCac / 3 * 100);
+                    const cacPercent = cac > 0 ? Math.round(10000 / cac * 100) : 0;
+                    const conversionPercent = Math.round(conversionRate / 1 * 100);
+                    const stickinessPercent = Math.round(stickiness / 5 * 100);
+
+                    window.dashboardCharts.benchmark.data.datasets[0].data = [
+                        mauPercent,
+                        mrrPercent,
+                        arppuPercent,
+                        ltvCacPercent,
+                        cacPercent,
+                        conversionPercent,
+                        stickinessPercent
+                    ];
+                    window.dashboardCharts.benchmark.update();
+                    console.log('[Charts] Benchmark radar updated');
+                }
+
+                // Update stage comparison chart - "천기문 현재" dataset
+                if (window.dashboardCharts.stage) {
+                    const mauMan = parseFloat((safeNum(data.mau) / 10000).toFixed(2));
+                    const mrrEok = parseFloat((safeNum(data.revenue) / 100000000).toFixed(2));
+                    const ltvCac = parseFloat(safeNum(data.ltvCac).toFixed(2));
+                    const arppuMan = parseFloat((safeNum(data.arppu) / 10000).toFixed(2));
+
+                    window.dashboardCharts.stage.data.datasets[2].data = [
+                        mauMan,
+                        mrrEok,
+                        ltvCac,
+                        arppuMan
+                    ];
+                    window.dashboardCharts.stage.update();
+                    console.log('[Charts] Stage comparison updated');
+                }
+
+                // Update ARPPU comparison chart
+                if (window.dashboardCharts.arppu) {
+                    window.dashboardCharts.arppu.data.datasets[0].data = [
+                        safeNum(data.arppu),
+                        6000,
+                        4000
+                    ];
+                    window.dashboardCharts.arppu.update();
+                    console.log('[Charts] ARPPU comparison updated');
+                }
+
+                // Update growth projection chart - update current values only
+                if (window.dashboardCharts.growth) {
+                    const currentMau = parseFloat((safeNum(data.mau) / 10000).toFixed(1));
+                    const currentMrr = parseFloat((safeNum(data.revenue) / 100000000).toFixed(2));
+
+                    window.dashboardCharts.growth.data.datasets[0].data[0] = currentMau;
+                    window.dashboardCharts.growth.data.datasets[1].data[0] = currentMrr;
+                    window.dashboardCharts.growth.update();
+                    console.log('[Charts] Growth projection updated');
+                }
+
+                console.log('[Charts] All charts updated successfully');
+            } catch (error) {
+                console.error('[Charts] Error updating charts:', error);
+            }
+        };
+
     </script>
-    <script src="/js/realtime-data.js"></script>
-    <script src="/js/trends-data.js"></script>
+    <script src="/js/realtime-data.js?v=20260129"></script>
+    <script src="/js/trends-data.js?v=20260129"></script>
+
+    <!-- Date Range Picker Functions -->
+    <script>
+    // Date Range Picker Functions
+    let currentStartDate = null;
+    let currentEndDate = null;
+
+    function setDateRange(days) {
+        // Update button styles
+        document.querySelectorAll('.date-preset-btn').forEach(btn => {
+            btn.style.background = 'rgba(102, 126, 234, 0.1)';
+            btn.style.borderColor = 'rgba(102, 126, 234, 0.3)';
+            btn.style.color = '#667eea';
+            btn.classList.remove('active');
+        });
+
+        const activeBtn = document.querySelector(`.date-preset-btn[data-days="${days}"]`);
+        if (activeBtn) {
+            activeBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            activeBtn.style.borderColor = 'transparent';
+            activeBtn.style.color = '#fff';
+            activeBtn.classList.add('active');
+        }
+
+        // Hide custom date inputs
+        document.getElementById('customDateInputs').style.display = 'none';
+
+        // Calculate dates
+        const end = new Date();
+        const start = new Date();
+        start.setDate(end.getDate() - days);
+
+        currentStartDate = start.toISOString().slice(0, 10);
+        currentEndDate = end.toISOString().slice(0, 10);
+
+        // Load data with new date range
+        loadDataWithDateRange(currentStartDate, currentEndDate);
+    }
+
+    function toggleCustomDate() {
+        const customInputs = document.getElementById('customDateInputs');
+        const isVisible = customInputs.style.display === 'flex';
+
+        if (!isVisible) {
+            // Show custom inputs
+            customInputs.style.display = 'flex';
+
+            // Update button styles
+            document.querySelectorAll('.date-preset-btn').forEach(btn => {
+                btn.style.background = 'rgba(102, 126, 234, 0.1)';
+                btn.style.borderColor = 'rgba(102, 126, 234, 0.3)';
+                btn.style.color = '#667eea';
+                btn.classList.remove('active');
+            });
+
+            const customBtn = document.querySelector('.date-preset-btn[data-days="custom"]');
+            if (customBtn) {
+                customBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                customBtn.style.borderColor = 'transparent';
+                customBtn.style.color = '#fff';
+                customBtn.classList.add('active');
+            }
+
+            // Set default values to current range or last 30 days
+            const endInput = document.getElementById('endDateInput');
+            const startInput = document.getElementById('startDateInput');
+
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 30);
+
+            endInput.value = end.toISOString().slice(0, 10);
+            startInput.value = start.toISOString().slice(0, 10);
+        } else {
+            customInputs.style.display = 'none';
+        }
+    }
+
+    function applyCustomDate() {
+        const startInput = document.getElementById('startDateInput');
+        const endInput = document.getElementById('endDateInput');
+
+        if (!startInput.value || !endInput.value) {
+            alert('시작일과 종료일을 모두 선택해주세요.');
+            return;
+        }
+
+        currentStartDate = startInput.value;
+        currentEndDate = endInput.value;
+
+        loadDataWithDateRange(currentStartDate, currentEndDate);
+    }
+
+    async function loadDataWithDateRange(start, end) {
+        // Show loading indicator
+        const datePickerContainer = document.getElementById('datePickerContainer');
+        const originalBtnState = {};
+        document.querySelectorAll('.date-preset-btn').forEach((btn, i) => {
+            originalBtnState[i] = btn.disabled;
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+        });
+
+        try {
+            console.log('[DatePicker] Loading data for range:', start, '~', end);
+
+            const apiUrl = `/api/kpi?start=${start}&end=${end}`;
+            console.log('[DatePicker] Fetching:', apiUrl);
+
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log('[DatePicker] API Response:', result);
+
+            if (!result.success) {
+                console.error('[DatePicker] API Error:', result.error);
+                alert('데이터를 불러오는데 실패했습니다: ' + (result.error || '알 수 없는 오류'));
+                return;
+            }
+
+            // Use the global update function from realtime-data.js
+            if (typeof window.updateDashboardWithData === 'function') {
+                window.updateDashboardWithData(result.data);
+                console.log('[DatePicker] Dashboard updated with new date range');
+            } else {
+                console.warn('[DatePicker] updateDashboardWithData not available, page may need refresh');
+                // Force reload with the date range
+                window.location.reload();
+            }
+
+            // Also reload monthly trends if the function is available
+            if (typeof window.reloadTrendsData === 'function') {
+                console.log('[DatePicker] Reloading trends data for date range:', start, '~', end);
+                window.reloadTrendsData(start, end);
+            } else {
+                console.warn('[DatePicker] reloadTrendsData not available yet');
+            }
+
+        } catch (error) {
+            console.error('[DatePicker] Failed to load data:', error);
+            alert('데이터를 불러오는데 실패했습니다: ' + error.message);
+        } finally {
+            // Restore button state
+            document.querySelectorAll('.date-preset-btn').forEach((btn, i) => {
+                btn.disabled = originalBtnState[i] || false;
+                btn.style.opacity = '1';
+            });
+        }
+    }
+    </script>
 </body>
 </html>
