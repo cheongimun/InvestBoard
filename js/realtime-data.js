@@ -69,9 +69,14 @@
     // KPI value mappings for data-kpi attributes
     // KPI 정의서 v3.0 기준으로 업데이트
     const kpiFormats = {
-      // === MAU 계층 구조 (KPI 정의서 섹션 2) ===
+      // === MAU 계층 구조 (GA4 하이브리드) ===
       mau: formatMan(data.mau),
       totalMau: formatNum(data.mau) + '명',
+      ga4Mau: formatNum(data.ga4Mau || 0) + '명',
+      estimatedMau: formatNum(data.estimatedMau || 0) + '명',
+      engagedUsers: formatNum(data.engagedUsers || 0) + '명',
+      mauSource: data.mauSource || 'unknown',
+      visitorRatio: (data.visitorRatio || 2.20).toFixed(2) + 'x',
       payingMau: formatNum(data.payingMau || 0) + '명',
       freeOnlyMau: formatNum(data.freeOnlyMau || 0) + '명',
       payingRatio: formatPercent(data.payingRatio || 0),
@@ -106,7 +111,7 @@
       // === 전환율 & ROAS ===
       roas: formatX(data.roas),
       conversionRate: formatPercent(data.conversionRate),
-      grossMargin: formatPercentShort(data.grossMargin) + '%',
+      grossMargin: formatPercentShort(data.grossMargin),
       grossMarginWon: Math.round(data.grossMargin) + '원',
 
       // === 방문 리텐션 (Visit Retention - KPI 정의서 섹션 3.3.1) ===
@@ -135,16 +140,15 @@
       mrrCurrent: formatEok(data.revenue),
       preseedStatus: ' 현재 | MAU ' + formatMan(data.mau) + ' | MRR ' + formatEok(data.revenue),
 
-      // === Investor Tab Section (KPI 정의서 v3.0 벤치마크 적용) ===
-      // Consumer Transactional 기준 (Lenny Rachitsky)
+      // === Investor Tab Section (Pre-A 투자 기준) ===
       mrrAchieved: 'MRR ' + formatEok(data.revenue),
-      mauStatus: formatMan(data.mau) + (data.mau >= 50000 ? ' ✓' : ' ✗'),
-      conversionStatus: formatPercent(data.conversionRate) + (data.conversionRate >= 3 ? ' ✓' : ' ✗'),
-      // D1 기준: Consumer Transactional Good 25-35%
-      d1Status: 'D1 ' + formatPercent(data.d1Retention) + (data.d1Retention >= 25 ? ' ✓' : data.d1Retention >= 15 ? ' △' : ' ✗'),
-      // LTV:CAC 기준: Seed 2:1, Series A 3:1
+      mauStatus: formatMan(data.mau) + (data.mau >= 100000 ? ' ✓' : ' ✗'),
+      conversionStatus: formatPercent(data.conversionRate) + (data.conversionRate >= 5 ? ' ✓' : ' ✗'),
+      // D1 기준: Pre-A 30%
+      d1Status: 'D1 ' + formatPercent(data.d1Retention) + (data.d1Retention >= 30 ? ' ✓' : data.d1Retention >= 20 ? ' △' : ' ✗'),
+      // LTV:CAC 기준: Pre-A 3:1
       ltvCacStatus: formatX(data.ltvCac) + (data.ltvCac >= 3 ? ' ✓' : data.ltvCac >= 2 ? ' △' : ' ✗'),
-      mrrPmfStatus: 'MRR ' + (data.revenue >= 100000000 ? '1억+ ✓' : formatManWonUnit(data.revenue)),
+      mrrPmfStatus: 'MRR ' + (data.revenue >= 300000000 ? '3억+ ✓' : formatManWonUnit(data.revenue)),
       // 거래 리텐션 상태 (투자자 Primary 지표)
       m1Status: 'M1 ' + (data.m1Retention || 0).toFixed(1) + '%' + ((data.m1Retention || 0) >= 20 ? ' ✓' : (data.m1Retention || 0) >= 10 ? ' △' : ' ✗'),
       m6Status: 'M6 ' + (data.m6Retention || 0).toFixed(1) + '%' + ((data.m6Retention || 0) >= 10 ? ' ✓' : (data.m6Retention || 0) >= 5 ? ' △' : ' ✗'),
@@ -157,27 +161,27 @@
       payingUsersValuation: formatNum(data.payingUsers) + '명',
       roasValuation: 'ROAS ' + formatX(data.roas),
 
-      // === Gap Analysis Section (KPI 정의서 v3.0 Consumer Transactional 기준) ===
-      // D7 방문 리텐션: Good 10-15% (Consumer Transactional)
+      // === Gap Analysis Section (Pre-A 투자 기준) ===
+      // D7 방문 리텐션: Good 10-15%
       d7GapStatus: (data.d7Retention || 0).toFixed(1) + '% → 10%+ 필요',
       d7Percent: Math.round((data.d7Retention || 0) / 10 * 100) + '%',
-      // D30 방문 리텐션: Good 6-10% (Consumer Transactional)
+      // D30 방문 리텐션: Good 6-10%
       d30GapStatus: (data.d30Retention || 0).toFixed(1) + '% → 6%+ 필요',
       d30Percent: Math.round((data.d30Retention || 0) / 6 * 100) + '%',
-      // 재구매율: Good 20-40% (KPI 정의서 섹션 4.4)
+      // 재구매율: Good 20-40%
       repurchaseGapStatus: formatPercent(data.repurchaseRate) + ' → 20%+ 필요',
       repurchasePercent: Math.round(data.repurchaseRate / 20 * 100) + '%',
-      // LTV:CAC: Series A 목표 3:1 (KPI 정의서 섹션 8.2)
-      ltvCacGapStatus: formatX(data.ltvCac) + ' → 3x+ 필요 (Series A)',
+      // LTV:CAC: Pre-A 목표 3:1
+      ltvCacGapStatus: formatX(data.ltvCac) + ' → 3x+ 필요 (Pre-A)',
       ltvCacPercent: Math.round(data.ltvCac / 3 * 100) + '%',
-      // D1 방문 리텐션: Good 25-35% (Consumer Transactional)
-      d1GapStatus: formatPercent(data.d1Retention) + ' → 25%+ 필요',
-      d1Percent: Math.round(data.d1Retention / 25 * 100) + '%',
-      mauGapStatus: formatMan(data.mau) + (data.mau >= 50000 ? ' (시드 기준 충족)' : ' (시드 기준 미달)'),
-      mauPercent: Math.round(data.mau / 50000 * 100) + '%',
-      // 전환율: Good 3-5% (KPI 정의서 섹션 5.4)
-      conversionGapStatus: formatPercent(data.conversionRate) + (data.conversionRate >= 3 ? ' (업계 상위)' : ' → 3%+ 필요'),
-      conversionPercent: Math.round(data.conversionRate / 3 * 100) + '%',
+      // D1 방문 리텐션: Pre-A 30%
+      d1GapStatus: formatPercent(data.d1Retention) + ' → 30%+ 필요',
+      d1Percent: Math.round(data.d1Retention / 30 * 100) + '%',
+      mauGapStatus: formatMan(data.mau) + (data.mau >= 100000 ? ' (Pre-A 기준 충족)' : ' (Pre-A 기준 미달)'),
+      mauPercent: Math.round(data.mau / 100000 * 100) + '%',
+      // 전환율: Pre-A 목표 5%
+      conversionGapStatus: formatPercent(data.conversionRate) + (data.conversionRate >= 5 ? ' (Pre-A 달성)' : ' → 5%+ 필요'),
+      conversionPercent: Math.round(data.conversionRate / 5 * 100) + '%',
       // 거래 리텐션 M1: Good 20-30% (KPI 정의서 섹션 3.4)
       m1GapStatus: (data.m1Retention || 0).toFixed(1) + '% → 20%+ 필요',
       m1Percent: Math.round((data.m1Retention || 0) / 20 * 100) + '%',
@@ -185,13 +189,13 @@
       m6GapStatus: (data.m6Retention || 0).toFixed(1) + '% → 10%+ 필요',
       m6Percent: Math.round((data.m6Retention || 0) / 10 * 100) + '%',
 
-      // === Investor Criteria Cards (KPI 정의서 v3.0 기준) ===
-      mauCriteria: formatMan(data.mau) + (data.mau >= 50000 ? ' ✓' : ' ✗'),
-      // 전환율: Good 3-5% (KPI 정의서 섹션 5.4)
-      conversionCriteria: formatPercent(data.conversionRate) + (data.conversionRate >= 3 ? ' ✓' : ' ✗'),
-      // D1 방문 리텐션: Good 25-35% (Consumer Transactional)
-      d1Criteria: formatPercent(data.d1Retention) + (data.d1Retention >= 25 ? ' ✓' : data.d1Retention >= 15 ? ' △' : ' ✗'),
-      // LTV:CAC: Series A 목표 3:1 (KPI 정의서 섹션 8.2)
+      // === Investor Criteria Cards (Pre-A 투자 기준) ===
+      mauCriteria: formatMan(data.mau) + (data.mau >= 100000 ? ' ✓' : ' ✗'),
+      // 전환율: Pre-A 목표 5%
+      conversionCriteria: formatPercent(data.conversionRate) + (data.conversionRate >= 5 ? ' ✓' : ' ✗'),
+      // D1 방문 리텐션: Pre-A 30%
+      d1Criteria: formatPercent(data.d1Retention) + (data.d1Retention >= 30 ? ' ✓' : data.d1Retention >= 20 ? ' △' : ' ✗'),
+      // LTV:CAC: Pre-A 목표 3:1
       ltvCacCriteria: formatX(data.ltvCac) + (data.ltvCac >= 3 ? ' ✓' : data.ltvCac >= 2 ? ' △' : ' ✗'),
       // 거래 리텐션 M1 (투자자 Primary 지표)
       m1Criteria: (data.m1Retention || 0).toFixed(1) + '%' + ((data.m1Retention || 0) >= 20 ? ' ✓' : (data.m1Retention || 0) >= 10 ? ' △' : ' ✗'),
@@ -203,9 +207,7 @@
       paidUsers: formatNum(data.payingUsers) + '명',
       cacPayback: cacPayback < 2 ? '~' + Math.ceil(cacPayback) + '개월' : Math.round(cacPayback) + '개월',
       churnRate: '측정중',
-      d7Retention: data.d7Retention ? formatPercent(data.d7Retention) : '측정중',
       d7RetentionValue: data.d7Retention ? formatPercent(data.d7Retention) : '측정중',
-      d30Retention: '측정중',
       nrr: '측정필요',
       activationRate: '측정필요',
 
@@ -236,7 +238,7 @@
       d1RetentionPct: formatPercent(data.d1Retention),
       stickinessRef: formatPercent(data.stickiness),
       stickinessPct: formatPercent(data.stickiness),
-      grossMarginPct: formatPercentShort(data.grossMargin) + '%',
+      grossMarginPct: formatPercentShort(data.grossMargin),
 
       // 결제 퍼널 데이터
       funnelAdClicks: formatNum(funnelAdClicks),
@@ -273,7 +275,18 @@
 
       // NDR
       ndrValue: data.ndr ? data.ndr.toFixed(0) + '%' : '측정 중',
-      ndrStatus: data.ndr ? (data.ndr >= 100 ? '확장 성장 중' : (data.ndr >= 80 ? '유지 수준' : '개선 필요')) : '3개월 이상 운영 데이터 필요'
+      ndrStatus: data.ndr ? (data.ndr >= 100 ? '확장 성장 중' : (data.ndr >= 80 ? '유지 수준' : '개선 필요')) : '3개월 이상 운영 데이터 필요',
+
+      // === Pre-A 벤치마크 달성률 ===
+      mauAchievement: (data.achievements?.mau || 0) + '%',
+      mrrAchievement: (data.achievements?.mrr || 0) + '%',
+      ltvCacAchievement: (data.achievements?.ltvCac || 0) + '%',
+      conversionAchievement: (data.achievements?.conversionRate || 0) + '%',
+      d1Achievement: (data.achievements?.d1Retention || 0) + '%',
+      grossMarginAchievement: (data.achievements?.grossMargin || 0) + '%',
+
+      // LTV/CAC X format (벤치마크 테이블용)
+      ltvCacX: formatX(data.ltvCac)
     };
 
     // Update all elements with data-kpi attribute
@@ -283,6 +296,18 @@
       });
     });
 
+    // Update MAU source indicator
+    const mauSourceEl = document.querySelector('[data-kpi="mauSource"]');
+    if (mauSourceEl) {
+      const sourceLabels = {
+        'ga4': '🟢 GA4 실측',
+        'hybrid': '🟡 GA4 + 추정',
+        'estimated': '🟠 추정치',
+        'fallback': '🔴 폴백'
+      };
+      mauSourceEl.textContent = sourceLabels[data.mauSource] || data.mauSource;
+    }
+
     // Comprehensive text replacement patterns
     const replacements = [
       // MAU patterns
@@ -290,16 +315,21 @@
       ['70,023', formatNum(data.mau)],
       ['66,099명', formatNum(data.mau) + '명'],
       ['66,099', formatNum(data.mau)],
+      ['66,548명', formatNum(data.mau) + '명'],
+      ['66,548', formatNum(data.mau)],
       ['57,786명', formatNum(data.mau) + '명'],
       ['57,786', formatNum(data.mau)],
       ['7.0만명', formatMan(data.mau) + '명'],
       ['7.0만', formatMan(data.mau)],
+      ['6.7만', formatMan(data.mau)],
+      ['6.65만', formatMan(data.mau)],
       ['6.6만명', formatMan(data.mau) + '명'],
       ['6.6만', formatMan(data.mau)],
       ['6.0만', formatMan(data.mau)],
       ['60,000', formatNum(data.mau)],
 
       // MRR/Revenue patterns
+      ['147,946,360원', formatNum(data.revenue) + '원'],
       ['106,489,300원', formatNum(data.revenue) + '원'],
       ['106,489,300', formatNum(data.revenue)],
       ['108,094,700원', formatNum(data.revenue) + '원'],
@@ -308,6 +338,8 @@
       ['87,922,500', formatNum(data.revenue)],
       ['86,631,200원', formatNum(data.revenue) + '원'],
       ['86,631,200', formatNum(data.revenue)],
+      ['14,795만원', formatManWonUnit(data.revenue)],
+      ['14,795만', formatManWon(data.revenue)],
       ['10,649만원', formatManWonUnit(data.revenue)],
       ['10,649만', formatManWon(data.revenue)],
       ['10,809만원', formatManWonUnit(data.revenue)],
@@ -316,6 +348,8 @@
       ['8,792만', formatManWon(data.revenue)],
       ['8,663만원', formatManWonUnit(data.revenue)],
       ['8,663만', formatManWon(data.revenue)],
+      ['1.48억원', formatEok(data.revenue) + '원'],
+      ['1.48억', formatEok(data.revenue)],
       ['1.16억원', formatEok(data.revenue) + '원'],
       ['1.16억', formatEok(data.revenue)],
       ['1.08억원', formatEok(data.revenue) + '원'],
@@ -328,6 +362,8 @@
       ['MRR 0.88억', 'MRR ' + formatEok(data.revenue)],
 
       // ARR patterns
+      ['17.75억', formatEokShort(data.arr)],
+      ['17.8억', formatEokShort(data.arr)],
       ['12.8억원', formatEokShort(data.arr) + '원'],
       ['12.8억', formatEokShort(data.arr)],
       ['13.0억원', formatEokShort(data.arr) + '원'],
@@ -339,6 +375,8 @@
       ['10.4억', formatEokShort(data.arr)],
 
       // ARPPU patterns
+      ['37,332원', formatWon(data.arppu)],
+      ['37,332', formatNum(data.arppu)],
       ['₩36,929', '₩' + formatNum(data.arppu)],
       ['36,929원', formatWon(data.arppu)],
       ['36,929', formatNum(data.arppu)],
@@ -353,6 +391,8 @@
       ['34,820', formatNum(data.arppu)],
 
       // Paying users
+      ['3,963명', formatNum(data.payingUsers) + '명'],
+      ['3,963', formatNum(data.payingUsers)],
       ['2,964명', formatNum(data.payingUsers) + '명'],
       ['2,964', formatNum(data.payingUsers)],
       ['3,009명', formatNum(data.payingUsers) + '명'],
@@ -376,6 +416,8 @@
       ['63,090', formatNum(freeUsers)],
 
       // CAC patterns
+      ['13,364원', formatWon(data.cac)],
+      ['13,364', formatNum(data.cac)],
       ['25,785원', formatWon(data.cac)],
       ['25,785', formatNum(data.cac)],
       ['22,967원', formatWon(data.cac)],
@@ -389,6 +431,8 @@
       ['923', formatNum(data.cac)],
 
       // LTV/CAC patterns
+      ['3.0x', formatX(data.ltvCac)],
+      ['3.00x', formatX(data.ltvCac)],
       ['37.7x', formatX(data.ltvCac)],
       ['1.74x', formatX(data.ltvCac)],
       ['1.72x', formatX(data.ltvCac)],
@@ -397,6 +441,7 @@
       ['1.45x', formatX(data.ltvCac)],
 
       // ROAS patterns
+      ['2.79x', formatX(data.roas)],
       ['1.56x', formatX(data.roas)],
       ['1.42x', formatX(data.roas)],
       ['ROAS 1.56x', 'ROAS ' + formatX(data.roas)],
@@ -404,6 +449,7 @@
       ['108,094,700 / 62,896,085 = 1.72x', formatNum(data.revenue) + ' / ' + formatNum(data.adSpend) + ' = ' + formatX(data.roas)],
 
       // Conversion rate patterns
+      ['5.96%', formatPercent(data.conversionRate)],
       ['4.65%', formatPercent(data.conversionRate)],
       ['4.55%', formatPercent(data.conversionRate)],
       ['4.24%', formatPercent(data.conversionRate)],
@@ -412,6 +458,7 @@
       ['3.76%', formatPercent(data.conversionRate)],
 
       // D1 Retention patterns
+      ['2.22%', formatPercent(data.d1Retention)],
       ['4.68%', formatPercent(data.d1Retention)],
       ['4.64%', formatPercent(data.d1Retention)],
       ['4.55%', formatPercent(data.d1Retention)],
@@ -428,10 +475,11 @@
       ['3.66%', formatPercent(data.stickiness)],
 
       // Gross Margin patterns
-      ['84.9%', formatPercentShort(data.grossMargin) + '%'],
-      ['85.7%', formatPercentShort(data.grossMargin) + '%'],
-      ['75.7%', formatPercentShort(data.grossMargin) + '%'],
-      ['75.3%', formatPercentShort(data.grossMargin) + '%'],
+      ['82.8%', formatPercentShort(data.grossMargin)],
+      ['84.9%', formatPercentShort(data.grossMargin)],
+      ['85.7%', formatPercentShort(data.grossMargin)],
+      ['75.7%', formatPercentShort(data.grossMargin)],
+      ['75.3%', formatPercentShort(data.grossMargin)],
 
       // Repurchase rate patterns
       ['2.94%', formatPercent(data.repurchaseRate)],
@@ -600,7 +648,69 @@
       window.updateChartsWithData(data);
     }
 
+    // Update achievement indicators
+    updateAchievementIndicators(data);
+
     console.log('[Realtime] Dashboard fully updated with real data');
+  }
+
+  // Update achievement progress bars and status indicators
+  function updateAchievementIndicators(data) {
+    const achievements = data.achievements || {};
+
+    // Update progress bars
+    const progressMappings = {
+      'mauAchievement': achievements.mau || 0,
+      'mrrAchievement': achievements.mrr || 0,
+      'ltvCacAchievement': achievements.ltvCac || 0,
+      'conversionAchievement': achievements.conversionRate || 0,
+      'd1Achievement': achievements.d1Retention || 0,
+      'grossMarginAchievement': achievements.grossMargin || 0
+    };
+
+    Object.keys(progressMappings).forEach(key => {
+      const progressEl = document.querySelector(`[data-progress="${key}"]`);
+      if (progressEl) {
+        const value = Math.min(progressMappings[key], 100);
+        progressEl.style.width = value + '%';
+
+        // Color based on achievement
+        if (progressMappings[key] >= 100) {
+          progressEl.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+        } else if (progressMappings[key] >= 80) {
+          progressEl.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+        } else {
+          progressEl.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+        }
+      }
+    });
+
+    // Update status indicators
+    const statusMappings = {
+      'mau': achievements.mau || 0,
+      'mrr': achievements.mrr || 0,
+      'ltvCac': achievements.ltvCac || 0,
+      'conversion': achievements.conversionRate || 0,
+      'd1': achievements.d1Retention || 0,
+      'grossMargin': achievements.grossMargin || 0
+    };
+
+    Object.keys(statusMappings).forEach(key => {
+      const statusEl = document.querySelector(`[data-status="${key}"]`);
+      if (statusEl) {
+        const value = statusMappings[key];
+        if (value >= 100) {
+          statusEl.textContent = '🟢';
+          statusEl.title = '목표 달성!';
+        } else if (value >= 80) {
+          statusEl.textContent = '🟡';
+          statusEl.title = '목표 근접';
+        } else {
+          statusEl.textContent = '🔴';
+          statusEl.title = '개선 필요';
+        }
+      }
+    });
   }
 
   async function loadRealtimeData() {
@@ -625,19 +735,19 @@
     }
   }
 
-  // Update KPI status indicators based on Consumer Transactional benchmarks
+  // Update KPI status indicators based on Pre-A investment benchmarks
   function updateKpiStatusIndicators(data) {
     const indicators = {
-      // MAU: 50k+ is Seed level
-      'mau-status': { value: data.mau, thresholds: [30000, 50000], classes: ['danger', 'warning', 'achieved'] },
-      // D1: Consumer Transactional Good 25-35%
-      'd1-status': { value: data.d1Retention, thresholds: [15, 25], classes: ['danger', 'warning', 'achieved'] },
-      // LTV:CAC: Series A needs 3:1
+      // MAU: Pre-A 100k target
+      'mau-status': { value: data.mau, thresholds: [50000, 100000], classes: ['danger', 'warning', 'achieved'] },
+      // D1: Pre-A 30% target
+      'd1-status': { value: data.d1Retention, thresholds: [20, 30], classes: ['danger', 'warning', 'achieved'] },
+      // LTV:CAC: Pre-A needs 3:1
       'ltvcac-status': { value: data.ltvCac, thresholds: [2, 3], classes: ['danger', 'warning', 'achieved'] },
       // M1 Transaction Retention: Good 20-30%
       'm1-status': { value: data.m1Retention || 0, thresholds: [10, 20], classes: ['danger', 'warning', 'achieved'] },
-      // Conversion: Good 3-5%
-      'conversion-status': { value: data.conversionRate, thresholds: [2, 3], classes: ['danger', 'warning', 'achieved'] }
+      // Conversion: Pre-A 5% target
+      'conversion-status': { value: data.conversionRate, thresholds: [3, 5], classes: ['danger', 'warning', 'achieved'] }
     };
 
     Object.keys(indicators).forEach(id => {
@@ -654,32 +764,33 @@
 
   function updateStatusIndicators(data) {
     const statusConfig = {
-      mau: { value: data.mau, thresholds: [50000, 100000], labels: ['양호', '우수'] },
-      ltvCac: { value: data.ltvCac, thresholds: [1, 3], labels: ['개선필요', '양호', '우수'] },
-      cac: { value: data.cac, thresholds: [10000, 30000], labels: ['우수', '양호', '개선필요'], inverse: true },
+      mau: { value: data.mau, thresholds: [50000, 100000], labels: ['개선필요', '양호', 'Pre-A 달성'] },
+      ltvCac: { value: data.ltvCac, thresholds: [2, 3], labels: ['개선필요', '양호', 'Pre-A 달성'] },
+      cac: { value: data.cac, thresholds: [10000, 30000], labels: ['Pre-A 달성', '양호', '개선필요'], inverse: true },
       roas: { value: data.roas, thresholds: [1, 2], labels: ['개선필요', '양호', '우수'] },
-      d1Retention: { value: data.d1Retention, thresholds: [10, 20], labels: ['개선필요', '양호', '우수'] },
-      stickiness: { value: data.stickiness, thresholds: [5, 10], labels: ['개선필요', '양호', '우수'] },
+      d1Retention: { value: data.d1Retention, thresholds: [20, 30], labels: ['개선필요', '양호', 'Pre-A 달성'] },
+      stickiness: { value: data.stickiness, thresholds: [10, 20], labels: ['개선필요', '양호', 'Pre-A 달성'] },
       grossMargin: { value: data.grossMargin, thresholds: [50, 70], labels: ['개선필요', '양호', '우수'] }
     };
   }
 
   function updateGapAnalysisProgressBars(data) {
-    // KPI 정의서 v3.0 기준 벤치마크 (Consumer Transactional)
+    // Pre-A 투자 기준 벤치마크
     const gapTargets = {
       // D7 방문 리텐션: Good 10-15%
       d7: { current: data.d7Retention || 0, target: 10, id: 'd7Progress' },
       // D30 방문 리텐션: Good 6-10%
       d30: { current: data.d30Retention || 0, target: 6, id: 'd30Progress' },
-      // 재구매율: Good 20-40% (KPI 정의서 섹션 4.4)
+      // 재구매율: Good 20-40%
       repurchase: { current: data.repurchaseRate, target: 20, id: 'repurchaseProgress' },
-      // LTV:CAC: Series A 목표 3:1 (KPI 정의서 섹션 8.2)
+      // LTV:CAC: Pre-A 목표 3:1
       ltvCac: { current: data.ltvCac, target: 3, id: 'ltvCacProgress' },
-      // D1 방문 리텐션: Good 25-35%
-      d1: { current: data.d1Retention, target: 25, id: 'd1Progress' },
-      mau: { current: data.mau / 50000 * 100, target: 100, id: 'mauProgress' },
-      // 전환율: Good 3-5%
-      conversion: { current: data.conversionRate / 3 * 100, target: 100, id: 'conversionProgress' },
+      // D1 방문 리텐션: Pre-A 30%
+      d1: { current: data.d1Retention, target: 30, id: 'd1Progress' },
+      // MAU: Pre-A 10만 목표
+      mau: { current: data.mau / 100000 * 100, target: 100, id: 'mauProgress' },
+      // 전환율: Pre-A 5% 목표
+      conversion: { current: data.conversionRate / 5 * 100, target: 100, id: 'conversionProgress' },
       // 거래 리텐션 M1: Good 20-30%
       m1: { current: data.m1Retention || 0, target: 20, id: 'm1Progress' },
       // 거래 리텐션 M6: Good 10-20%
@@ -712,20 +823,20 @@
     const paidD1Retention = data.paidD1Retention || 0;
     const paidUserEngagement = data.d1Retention > 0 && paidD1Retention > 0 ? (paidD1Retention / data.d1Retention) : 0;
 
-    // KPI 정의서 v3.0 기준 벤치마크 (Consumer Transactional)
+    // Pre-A 투자 기준 벤치마크
     const benchmarks = {
-      mau: { target: 50000, type: 'min' },
-      revenue: { target: 10000000, type: 'min' },  // MRR 1000만원
+      mau: { target: 100000, type: 'min' },  // Pre-A: 10만
+      revenue: { target: 300000000, type: 'min' },  // Pre-A: MRR 3억원
       arppu: { target: 20000, type: 'min' },
-      // LTV:CAC: Series A 목표 3:1 (KPI 정의서 섹션 8.2)
+      // LTV:CAC: Pre-A 목표 3:1
       ltvCac: { target: 3.0, type: 'min' },
       cac: { target: 10000, type: 'max' },
-      // 전환율: Good 3-5% (KPI 정의서 섹션 5.4)
-      conversionRate: { target: 3.0, type: 'min' },
-      // Stickiness: Good 20%+ (Transactional 앱)
+      // 전환율: Pre-A 목표 5%
+      conversionRate: { target: 5.0, type: 'min' },
+      // Stickiness: Pre-A 목표 20%
       stickiness: { target: 20.0, type: 'min' },
-      // D1 방문 리텐션: Good 25-35% (Consumer Transactional)
-      d1Retention: { target: 25, type: 'min' },
+      // D1 방문 리텐션: Good 30%
+      d1Retention: { target: 30, type: 'min' },
       // D7 방문 리텐션: Good 10-15%
       d7Retention: { target: 10, type: 'min' },
       // D30 방문 리텐션: Good 6-10%
@@ -791,31 +902,31 @@
       benchmarkMauValue: formatNum(data.mau) + '명',
       benchmarkMauPercent: achievements.mau.percent + '%',
       benchmarkMauStatus: statusLabels[achievements.mau.status],
-      benchmarkMauMeaning: achievements.mau.percent >= 100 ? 'Seed 수준' : '개선 필요',
+      benchmarkMauMeaning: achievements.mau.percent >= 100 ? 'Pre-A 기준 달성' : 'Pre-A 목표 개선 필요',
       benchmarkRevenueValue: formatNum(data.revenue) + '원',
       benchmarkRevenuePercent: achievements.revenue.percent + '%',
       benchmarkRevenueStatus: statusLabels[achievements.revenue.status],
-      benchmarkRevenueMeaning: achievements.revenue.percent >= 100 ? 'Seed 수준' : '개선 필요',
+      benchmarkRevenueMeaning: achievements.revenue.percent >= 100 ? 'Pre-A 기준 달성' : 'Pre-A 목표 개선 필요',
       benchmarkArppuValue: formatWon(data.arppu),
       benchmarkArppuPercent: achievements.arppu.percent + '%',
       benchmarkArppuStatus: statusLabels[achievements.arppu.status],
-      benchmarkArppuMeaning: achievements.arppu.percent >= 100 ? 'Seed 수준' : '개선 필요',
+      benchmarkArppuMeaning: achievements.arppu.percent >= 100 ? 'Pre-A 기준 달성' : '개선 필요',
       benchmarkLtvCacValue: formatX(data.ltvCac),
       benchmarkLtvCacPercent: achievements.ltvCac.percent + '%',
       benchmarkLtvCacStatus: statusLabels[achievements.ltvCac.status],
-      benchmarkLtvCacMeaning: achievements.ltvCac.percent >= 100 ? '달성' : `3x 목표 대비 ${achievements.ltvCac.percent}%`,
+      benchmarkLtvCacMeaning: data.ltvCac >= 3.0 ? 'Pre-A 기준 달성' : `Pre-A 3x 목표 대비 ${achievements.ltvCac.percent}%`,
       benchmarkCacValue: formatWon(data.cac),
       benchmarkCacPercent: achievements.cac.percent + '%',
       benchmarkCacStatus: statusLabels[achievements.cac.status],
-      benchmarkCacMeaning: achievements.cac.percent >= 100 ? '달성' : '비용 절감 필요',
+      benchmarkCacMeaning: achievements.cac.percent >= 100 ? 'Pre-A 기준 달성' : 'CAC 절감 필요',
       benchmarkConversionValue: formatPercent(data.conversionRate),
       benchmarkConversionPercent: achievements.conversionRate.percent + '%',
       benchmarkConversionStatus: statusLabels[achievements.conversionRate.status],
-      benchmarkConversionMeaning: achievements.conversionRate.percent >= 100 ? 'Seed 수준' : '개선 필요',
+      benchmarkConversionMeaning: achievements.conversionRate.percent >= 100 ? 'Pre-A 기준 달성' : 'Pre-A 목표 개선 필요',
       benchmarkStickinessValue: formatPercent(data.stickiness),
       benchmarkStickinessPercent: achievements.stickiness.percent + '%',
       benchmarkStickinessStatus: statusLabels[achievements.stickiness.status],
-      benchmarkStickinessMeaning: achievements.stickiness.percent >= 100 ? '달성' : '개선 필요',
+      benchmarkStickinessMeaning: achievements.stickiness.percent >= 100 ? 'Pre-A 기준 달성' : 'Pre-A 목표 개선 필요',
       benchmarkD1Value: formatPercent(data.d1Retention),
       benchmarkD1Percent: '-',
       benchmarkD1Status: '측정중',
