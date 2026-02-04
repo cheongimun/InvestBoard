@@ -171,7 +171,7 @@
           backgroundColor: 'rgba(102, 126, 234, 0.8)',
           borderRadius: 4
         }, {
-          label: 'Series A 기준',
+          label: 'Pre-A 기준',
           data: [30, 10, 4, 4],
           backgroundColor: 'rgba(16, 185, 129, 0.3)',
           borderRadius: 4
