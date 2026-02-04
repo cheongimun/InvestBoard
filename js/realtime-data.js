@@ -277,6 +277,37 @@
       ndrValue: data.ndr ? data.ndr.toFixed(0) + '%' : '측정 중',
       ndrStatus: data.ndr ? (data.ndr >= 100 ? '확장 성장 중' : (data.ndr >= 80 ? '유지 수준' : '개선 필요')) : '3개월 이상 운영 데이터 필요',
 
+      // === NEW KPIs: Transactions (순매출, 환불율) ===
+      // 순매출: 0이면 총 매출을 기준으로 표시 (환불 데이터가 없으면 총 매출 = 순매출)
+      netRevenue: data.netRevenue > 0 ? formatWon(data.netRevenue) : formatWon(data.revenue),
+      netRevenueMan: data.netRevenue > 0 ? formatManWonUnit(data.netRevenue) : formatManWonUnit(data.revenue),
+      refundRate: data.refundCount > 0 ? formatPercent(data.refundRate) : '0.00% (환불 없음)',
+      refundCount: data.refundCount > 0 ? formatNum(data.refundCount) + '건' : '0건',
+      refundAmount: data.refundAmount > 0 ? formatWon(data.refundAmount) : '0원',
+
+      // === NEW KPIs: Users (가입 전환율, Churn) ===
+      totalUsers: data.totalUsers > 0 ? formatNum(data.totalUsers) + '명' : '측정중',
+      newUsers: data.newUsers > 0 ? formatNum(data.newUsers) + '명' : '측정중',
+      signupConversionRate: data.signupConversionRate > 0 ? formatPercent(data.signupConversionRate) : '측정중',
+      churnRateValue: data.totalUsers > 0 ? formatPercent(data.churnRate || 0) : '측정중',
+
+      // === NEW KPIs: Paid User Retention (결제자 리텐션) ===
+      // 결제자 리텐션: 0이면 "측정중" 표시 (premium_saju_results 테이블 데이터 필요)
+      paidD1RetentionValue: data.paidD1Retention > 0 ? formatPercent(data.paidD1Retention) : '측정중',
+      paidD7Retention: data.paidD7Retention > 0 ? formatPercent(data.paidD7Retention) : '측정중',
+      paidD30Retention: data.paidD30Retention > 0 ? formatPercent(data.paidD30Retention) : '측정중',
+
+      // === NEW KPIs: Coupons (쿠폰 사용률, K-factor) ===
+      couponIssuedCount: data.couponIssuedCount > 0 ? formatNum(data.couponIssuedCount) + '건' : '미발급',
+      couponUsedCount: data.couponUsedCount > 0 ? formatNum(data.couponUsedCount) + '건' : '0건',
+      couponRedemptionRate: data.couponIssuedCount > 0 ? formatPercent(data.couponRedemptionRate) : '해당없음',
+      couponDiscountAmount: data.couponDiscountAmount > 0 ? formatWon(data.couponDiscountAmount) : '0원',
+
+      // === NEW KPIs: Share Logs (공유율, 바이럴 K-factor) ===
+      shareCount: data.shareCount > 0 ? formatNum(data.shareCount) + '건' : '0건',
+      shareRate: data.shareCount > 0 ? formatPercent(data.shareRate) : '0.00%',
+      kFactor: data.kFactor > 0 ? data.kFactor.toFixed(2) : '측정중',
+
       // === Pre-A 벤치마크 달성률 ===
       mauAchievement: (data.achievements?.mau || 0) + '%',
       mrrAchievement: (data.achievements?.mrr || 0) + '%',
@@ -798,4 +829,5 @@
   // Expose functions globally for external calls
   window.refreshDashboard = loadRealtimeData;
   window.updateDashboardWithData = updateDashboardWithData;
+  window.updateBenchmarkTable = updateBenchmarkTable;
 })();
