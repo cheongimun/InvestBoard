@@ -304,16 +304,10 @@ module.exports = async (req, res) => {
       }).catch(e => { console.log('Users error:', e.message); return [[{}]]; }),
 
       // 분석팀 정의: 공유율 = DISTINCT 공유 사용자 / 무료 사용자 수
+      // Note: free_saju_share_logs만 확인됨 (love/marriage는 테이블 구조 다를 수 있음)
       share: bigquery.query({
-        query: `WITH all_share_logs AS (
-                  SELECT session_id, created_at FROM \`${projectId}.supabase_sync.free_saju_share_logs\`
-                  UNION ALL
-                  SELECT session_id, created_at FROM \`${projectId}.supabase_sync.free_love_share_logs\`
-                  UNION ALL
-                  SELECT session_id, created_at FROM \`${projectId}.supabase_sync.free_marriage_share_logs\`
-                )
-                SELECT COUNT(*) as share_count, COUNT(DISTINCT session_id) as sharers
-                FROM all_share_logs
+        query: `SELECT COUNT(*) as share_count, COUNT(DISTINCT session_id) as sharers
+                FROM \`${projectId}.supabase_sync.free_saju_share_logs\`
                 WHERE DATE(created_at) BETWEEN '${startDash}' AND '${endDash}'`
       }).catch(e => { console.log('Share error:', e.message); return [[{}]]; }),
 
