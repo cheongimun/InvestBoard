@@ -36,12 +36,14 @@ module.exports = async (req, res) => {
       cac: 0, ltvCac: 0, roas: 0, grossMargin: 0, d1Retention: 0,
       d7Retention: 0, d30Retention: 0, m1Retention: 0, m3Retention: 0, m6Retention: 0,
       stickiness: 0, repurchaseRate: 0,
+      // 분석팀 정의: D1/D7/D30 재구매율 (코호트 기반)
+      repurchaseD1: 0, repurchaseD7: 0, repurchaseD30: 0,
       payingMau: 0, freeOnlyMau: 0, payingRatio: 0,
       netRevenue: 0, refundRate: 0, refundCount: 0, refundAmount: 0,
       totalUsers: 0, signupConversionRate: 0, churnRate: 0,
       paidD1Retention: 0, paidD7Retention: 0, paidD30Retention: 0,
       couponRedemptionRate: 0, couponROI: 0, couponIssuedCount: 0, couponUsedCount: 0,
-      shareRate: 0, shareCount: 0, kFactor: 0,
+      shareRate: 0, shareCount: 0, sharers: 0, freeUsers: 0, kFactor: 0,
       cohortRetention: [],
       dataStart: startDash, dataEnd: endDash, benchmarks
     };
@@ -192,16 +194,92 @@ module.exports = async (req, res) => {
                 SELECT ROUND(AVG(dau), 0) as avg_dau FROM daily`
       }),
 
+      // 기존 재구매율 (기간 내 2회+)
       repurchase: bigquery.query({
         query: `SELECT
                   ROUND(COUNT(DISTINCT CASE WHEN order_count > 1 THEN customer_phone END) / NULLIF(COUNT(DISTINCT customer_phone), 0) * 100, 2) as repurchase,
-                  COUNT(DISTINCT CASE WHEN order_count > 1 THEN customer_phone END) as repurchase_customers
+                  COUNT(DISTINCT CASE WHEN order_count > 1 THEN customer_phone END) as repurchase_customers,
+                  SUM(order_count) as total_orders,
+                  COUNT(DISTINCT customer_phone) as total_customers
                 FROM (
                   SELECT customer_phone, COUNT(*) as order_count
                   FROM \`${projectId}.supabase_sync.orders\`
                   WHERE payment_status = 'PAID' AND DATE(created_at) BETWEEN '${startDash}' AND '${endDash}'
                   GROUP BY customer_phone
                 )`
+      }),
+
+      // 분석팀 정의: D1/D7/D30 재구매율 (첫 구매 후 N일 이내 재구매 비율)
+      repurchaseD1: bigquery.query({
+        query: `WITH first_purchase AS (
+                  SELECT CAST(customer_phone AS STRING) as phone, MIN(DATE(created_at, 'Asia/Seoul')) as first_date
+                  FROM \`${projectId}.supabase_sync.orders\`
+                  WHERE payment_status = 'PAID' AND customer_phone IS NOT NULL
+                  GROUP BY phone
+                ),
+                repurchased AS (
+                  SELECT DISTINCT fp.phone
+                  FROM first_purchase fp
+                  JOIN \`${projectId}.supabase_sync.orders\` o
+                    ON CAST(o.customer_phone AS STRING) = fp.phone
+                    AND o.payment_status = 'PAID'
+                    AND DATE(o.created_at, 'Asia/Seoul') = DATE_ADD(fp.first_date, INTERVAL 1 DAY)
+                )
+                SELECT
+                  COUNT(DISTINCT fp.phone) as cohort_size,
+                  COUNT(DISTINCT r.phone) as repurchased,
+                  ROUND(COUNT(DISTINCT r.phone) / NULLIF(COUNT(DISTINCT fp.phone), 0) * 100, 2) as rate
+                FROM first_purchase fp
+                LEFT JOIN repurchased r ON fp.phone = r.phone
+                WHERE fp.first_date BETWEEN '${startDash}' AND '${endDash}'`
+      }),
+
+      repurchaseD7: bigquery.query({
+        query: `WITH first_purchase AS (
+                  SELECT CAST(customer_phone AS STRING) as phone, MIN(DATE(created_at, 'Asia/Seoul')) as first_date
+                  FROM \`${projectId}.supabase_sync.orders\`
+                  WHERE payment_status = 'PAID' AND customer_phone IS NOT NULL
+                  GROUP BY phone
+                ),
+                repurchased AS (
+                  SELECT DISTINCT fp.phone
+                  FROM first_purchase fp
+                  JOIN \`${projectId}.supabase_sync.orders\` o
+                    ON CAST(o.customer_phone AS STRING) = fp.phone
+                    AND o.payment_status = 'PAID'
+                    AND DATE(o.created_at, 'Asia/Seoul') BETWEEN DATE_ADD(fp.first_date, INTERVAL 1 DAY) AND DATE_ADD(fp.first_date, INTERVAL 7 DAY)
+                )
+                SELECT
+                  COUNT(DISTINCT fp.phone) as cohort_size,
+                  COUNT(DISTINCT r.phone) as repurchased,
+                  ROUND(COUNT(DISTINCT r.phone) / NULLIF(COUNT(DISTINCT fp.phone), 0) * 100, 2) as rate
+                FROM first_purchase fp
+                LEFT JOIN repurchased r ON fp.phone = r.phone
+                WHERE fp.first_date BETWEEN '${startDash}' AND '${endDash}'`
+      }),
+
+      repurchaseD30: bigquery.query({
+        query: `WITH first_purchase AS (
+                  SELECT CAST(customer_phone AS STRING) as phone, MIN(DATE(created_at, 'Asia/Seoul')) as first_date
+                  FROM \`${projectId}.supabase_sync.orders\`
+                  WHERE payment_status = 'PAID' AND customer_phone IS NOT NULL
+                  GROUP BY phone
+                ),
+                repurchased AS (
+                  SELECT DISTINCT fp.phone
+                  FROM first_purchase fp
+                  JOIN \`${projectId}.supabase_sync.orders\` o
+                    ON CAST(o.customer_phone AS STRING) = fp.phone
+                    AND o.payment_status = 'PAID'
+                    AND DATE(o.created_at, 'Asia/Seoul') BETWEEN DATE_ADD(fp.first_date, INTERVAL 1 DAY) AND DATE_ADD(fp.first_date, INTERVAL 30 DAY)
+                )
+                SELECT
+                  COUNT(DISTINCT fp.phone) as cohort_size,
+                  COUNT(DISTINCT r.phone) as repurchased,
+                  ROUND(COUNT(DISTINCT r.phone) / NULLIF(COUNT(DISTINCT fp.phone), 0) * 100, 2) as rate
+                FROM first_purchase fp
+                LEFT JOIN repurchased r ON fp.phone = r.phone
+                WHERE fp.first_date BETWEEN '${startDash}' AND '${endDash}'`
       }),
 
       // Retention queries
@@ -225,12 +303,34 @@ module.exports = async (req, res) => {
                 FROM \`${projectId}.supabase_sync.users\``
       }).catch(e => { console.log('Users error:', e.message); return [[{}]]; }),
 
-      // Share logs
+      // 분석팀 정의: 공유율 = DISTINCT 공유 사용자 / 무료 사용자 수
       share: bigquery.query({
-        query: `SELECT COUNT(*) as share_count, COUNT(DISTINCT session_id) as sharers
-                FROM \`${projectId}.supabase_sync.free_saju_share_logs\`
+        query: `WITH all_share_logs AS (
+                  SELECT session_id, created_at FROM \`${projectId}.supabase_sync.free_saju_share_logs\`
+                  UNION ALL
+                  SELECT session_id, created_at FROM \`${projectId}.supabase_sync.free_love_share_logs\`
+                  UNION ALL
+                  SELECT session_id, created_at FROM \`${projectId}.supabase_sync.free_marriage_share_logs\`
+                )
+                SELECT COUNT(*) as share_count, COUNT(DISTINCT session_id) as sharers
+                FROM all_share_logs
                 WHERE DATE(created_at) BETWEEN '${startDash}' AND '${endDash}'`
       }).catch(e => { console.log('Share error:', e.message); return [[{}]]; }),
+
+      // 무료 사용자 수 (공유율 분모: DISTINCT 사용자)
+      freeUsers: bigquery.query({
+        query: `SELECT COUNT(DISTINCT session_id) as free_users
+                FROM (
+                  SELECT session_id FROM \`${projectId}.supabase_sync.free_saju_results\`
+                  WHERE DATE(created_at) BETWEEN '${startDash}' AND '${endDash}' AND session_id IS NOT NULL
+                  UNION ALL
+                  SELECT session_id FROM \`${projectId}.supabase_sync.free_love_saju_results\`
+                  WHERE DATE(created_at) BETWEEN '${startDash}' AND '${endDash}' AND session_id IS NOT NULL
+                  UNION ALL
+                  SELECT session_id FROM \`${projectId}.supabase_sync.free_marriage_saju_results\`
+                  WHERE DATE(created_at) BETWEEN '${startDash}' AND '${endDash}' AND session_id IS NOT NULL
+                )`
+      }),
 
       freeCount: bigquery.query({
         query: `SELECT COUNT(*) as free_count
@@ -360,10 +460,27 @@ module.exports = async (req, res) => {
       data.avgDau = avgDau;
     }
 
-    // Repurchase
+    // Repurchase (기존: 기간 내 2회+)
     if (queryResults.repurchase[0]?.[0]) {
       data.repurchaseRate = parseFloat(queryResults.repurchase[0][0].repurchase) || 0;
       data.repurchaseCustomers = parseInt(queryResults.repurchase[0][0].repurchase_customers) || 0;
+      data.totalOrders = parseInt(queryResults.repurchase[0][0].total_orders) || 0;
+      data.totalCustomers = parseInt(queryResults.repurchase[0][0].total_customers) || 0;
+      // 실제 평균 구매 횟수 (분석팀 정의)
+      data.avgPurchasesReal = data.totalCustomers > 0
+        ? Math.round(data.totalOrders / data.totalCustomers * 100) / 100
+        : 1;
+    }
+
+    // 분석팀 정의: D1/D7/D30 재구매율 (코호트 기반)
+    if (queryResults.repurchaseD1[0]?.[0]) {
+      data.repurchaseD1 = parseFloat(queryResults.repurchaseD1[0][0].rate) || 0;
+    }
+    if (queryResults.repurchaseD7[0]?.[0]) {
+      data.repurchaseD7 = parseFloat(queryResults.repurchaseD7[0][0].rate) || 0;
+    }
+    if (queryResults.repurchaseD30[0]?.[0]) {
+      data.repurchaseD30 = parseFloat(queryResults.repurchaseD30[0][0].rate) || 0;
     }
 
     // Users
@@ -373,14 +490,18 @@ module.exports = async (req, res) => {
       data.signupConversionRate = data.mau > 0 ? Math.round(data.newUsers / data.mau * 10000) / 100 : 0;
     }
 
-    // Share
-    if (queryResults.share[0]?.[0] && queryResults.freeCount[0]?.[0]) {
+    // 분석팀 정의: 공유율 = DISTINCT 공유 사용자 / 무료 사용자 수
+    if (queryResults.share[0]?.[0]) {
       const shareCount = parseInt(queryResults.share[0][0].share_count) || 0;
       const sharers = parseInt(queryResults.share[0][0].sharers) || 0;
-      const freeCount = parseInt(queryResults.freeCount[0][0].free_count) || 0;
+      const freeUsers = parseInt(queryResults.freeUsers?.[0]?.[0]?.free_users) || 0;
 
       data.shareCount = shareCount;
-      data.shareRate = freeCount > 0 ? Math.round(shareCount / freeCount * 10000) / 100 : 0;
+      data.sharers = sharers;
+      data.freeUsers = freeUsers;
+      // 분석팀 정의: DISTINCT 공유 사용자 / 무료 사용자 수
+      data.shareRate = freeUsers > 0 ? Math.round(sharers / freeUsers * 10000) / 100 : 0;
+      // K-Factor: 공유당 평균 신규 유입 추정 (공유 횟수 / 공유 사용자 × 전환율 가정 0.1)
       data.kFactor = sharers > 0 ? Math.round((shareCount / sharers) * 0.1 * 100) / 100 : 0;
     }
 
@@ -409,10 +530,11 @@ module.exports = async (req, res) => {
       data.cac = Math.round(adSpend / data.payingUsers);
     }
     if (data.arppu && data.cac) {
-      const avgPurchases = 1 + (data.repurchaseRate / Math.max(100 - data.repurchaseRate, 1));
+      // 분석팀 정의: 실제 평균 구매 횟수 (총 주문 수 / 구매자 수)
+      const avgPurchases = data.avgPurchasesReal || 1;
       data.ltv = Math.round(data.arppu * avgPurchases);
       data.ltvCac = Math.round(data.ltv / data.cac * 100) / 100;
-      data.avgPurchases = Math.round(avgPurchases * 100) / 100;
+      data.avgPurchases = avgPurchases;
     }
     if (data.revenue && adSpend) {
       data.roas = Math.round(data.revenue / adSpend * 100) / 100;
