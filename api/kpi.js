@@ -375,8 +375,10 @@ module.exports = async (req, res) => {
           user: 'postgres.jlutbjmjpreauyanjzdd',
           password: process.env.SUPABASE_PASSWORD,
           ssl: { rejectUnauthorized: false },
-          connectionTimeoutMillis: 5000
+          connectionTimeoutMillis: 10000,
+          idleTimeoutMillis: 10000
         });
+        console.log('PG connecting with password:', process.env.SUPABASE_PASSWORD ? 'SET' : 'NOT SET');
         const client = await pool.connect();
         const [adResult, aiResult] = await Promise.all([
           client.query('SELECT SUM(spend) FROM adset_performance'),
