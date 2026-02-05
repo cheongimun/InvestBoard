@@ -304,9 +304,9 @@ module.exports = async (req, res) => {
       }).catch(e => { console.log('Users error:', e.message); return [[{}]]; }),
 
       // 분석팀 정의: 공유율 = DISTINCT 공유 사용자 / 무료 사용자 수
-      // Note: free_saju_share_logs만 확인됨 (love/marriage는 테이블 구조 다를 수 있음)
+      // 공유 로그는 ip_address로 사용자 식별 (분석팀 정의)
       share: bigquery.query({
-        query: `SELECT COUNT(*) as share_count, COUNT(DISTINCT session_id) as sharers
+        query: `SELECT COUNT(*) as share_count, COUNT(DISTINCT ip_address) as sharers
                 FROM \`${projectId}.supabase_sync.free_saju_share_logs\`
                 WHERE DATE(created_at) BETWEEN '${startDash}' AND '${endDash}'`
       }).catch(e => { console.log('Share error:', e.message); return [[{}]]; }),
